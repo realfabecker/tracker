@@ -1,0 +1,28 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.194.3/containers/docker-existing-dockerfile
+{
+  "name": "wallet",
+  "dockerFile": "./Dockerfile",
+  "remoteUser": "gopher",
+  "workspaceFolder": "/home/gopher/src/wallet",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/gopher/src/wallet,type=bind,consistency=cached",
+  "runArgs": ["--rm", "--network=host", "--name", "wallet"],
+  "customizations": {
+    "vscode": {
+      "extensions": ["golang.go", "ms-azuretools.vscode-docker", "vscode.makefile-tools"],
+      "settings": {
+        "editor.formatOnSave": true,
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "[go]": {
+          "editor.defaultFormatter": "golang.go",
+          "editor.formatOnSave": true
+        }
+      }
+    }
+  }
+}

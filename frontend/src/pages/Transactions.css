@@ -1,0 +1,98 @@
+h1 {
+    text-align: center;
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+
+h1 span {
+    font-size: 1rem;
+    vertical-align: top;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
+
+h1.summary.expense {
+    color: #c11;
+}
+
+h1.summary.income {
+    color: #1c1;
+}
+
+form {
+    margin-top: 2.5rem;
+}
+
+form input {
+    width: 100%;
+    padding: .25rem .5rem;
+    border-radius: .25rem;
+}
+
+form input[type="datetime-local"] {
+    color: #777;
+}
+
+form div.basic {
+    display: flex;
+    gap: .25rem;
+    margin-bottom: .25rem;
+}
+
+form button {
+    width: 100%;
+    margin-top: .25rem;    
+    border-radius: .25rem;
+    padding: .5rem;
+    background-color: #ddd;
+}
+
+div.transactions {
+    margin-top: 1.5rem;
+}
+
+div.transactions.loading {
+    text-align: center;
+}
+
+div.transaction {
+    display:flex;
+    justify-content: space-between;
+    padding: .5rem 0;
+    border-top: 1px solid #888;
+}
+
+div.transaction:first-child{
+    border-top: 0;
+}
+
+div.transaction div.name {
+    font-size: 1rem;
+}
+
+div.transaction div.description {
+    font-size: .8rem;
+    color: #888;
+}
+
+div.transaction div.left {
+    text-align: left;
+}
+
+div.transaction div.right {
+    text-align: right;
+}
+
+div.transaction div.price.expense {
+    color: #c11;
+}
+
+div.transaction div.price.income {
+    color: #1c1;
+}
+
+div.transaction div.right div.datetime {
+    font-size: .8rem;
+    color: #888;
+}
