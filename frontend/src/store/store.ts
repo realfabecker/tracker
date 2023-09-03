@@ -1,9 +1,9 @@
-import { configureStore } from "@reduxjs/toolkit";
-import thunk from "redux-thunk";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
 import { ActionStatus } from "@core/domain/domain";
 import transactionsSlice from "@store/transactions/reducers/transactions";
 import authSlice from "@store/auth/reducers/auth";
+import { container } from "@core/container";
 
 export interface State<T = any> {
   data?: T;
@@ -12,7 +12,10 @@ export interface State<T = any> {
 }
 
 export const store = configureStore({
-  middleware: [thunk],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: { extraArgument: { container } },
+    }),
   reducer: {
     transactions: transactionsSlice,
     auth: authSlice,

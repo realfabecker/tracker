@@ -4,53 +4,59 @@ import {
   TransactionStatus,
 } from "@core/domain/domain";
 
-import { AuthService } from "@core/adapters/AuthService";
-import { TransactionService } from "@core/adapters/TransactionService";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { Container } from "inversify";
+import { IAuthService, ITransactionService } from "@core/ports/ports";
+import { Types } from "@core/container/types";
 
 export const getActionDeleteTransaction = createAsyncThunk(
   "transactions/del",
-  async (transaction: string, { dispatch }) => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  async (transaction: string, { dispatch, extra }) => {
+    const container = (<any>extra).container as Container;
 
-    const authService = new AuthService(baseUrl);
+    const authService = container.get<IAuthService>(Types.AuthService);
     const accessToken = authService.getAccessToken() as string;
 
-    const transactionService = new TransactionService(baseUrl, accessToken);
-    await transactionService.deleteTransaction(transaction);
-
+    const tranService = container.get<ITransactionService>(
+      Types.TransactionsService
+    );
+    await tranService.deleteTransaction(transaction, accessToken);
     dispatch(getActionLoadTransactionsList());
   }
 );
 
 export const getActionCreateTransaction = createAsyncThunk(
   "transactions/add",
-  async (transaction: Partial<Transaction>, { dispatch }) => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  async (transaction: Partial<Transaction>, { dispatch, extra }) => {
+    const container = (<any>extra).container as Container;
 
-    const authService = new AuthService(baseUrl);
+    const authService = container.get<IAuthService>(Types.AuthService);
     const accessToken = authService.getAccessToken() as string;
 
-    const transactionService = new TransactionService(baseUrl, accessToken);
-    await transactionService.addTransaction(transaction);
-
+    const tranService = container.get<ITransactionService>(
+      Types.TransactionsService
+    );
+    await tranService.addTransaction(transaction, accessToken);
     dispatch(getActionLoadTransactionsList());
   }
 );
 
 export const getActionLoadTransactionsList = createAsyncThunk(
   "transactions/list",
-  async () => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  async (_, { extra }) => {
+    const container = (<any>extra).container as Container;
 
-    const authService = new AuthService(baseUrl);
+    const authService = container.get<IAuthService>(Types.AuthService);
     const accessToken = authService.getAccessToken() as string;
 
-    const transactionService = new TransactionService(baseUrl, accessToken);
-    return transactionService.fetchTransactions({
+    const tranService = container.get<ITransactionService>(
+      Types.TransactionsService
+    );
+    return tranService.fetchTransactions({
       limit: 50,
       period: TransactionPeriod.THIS_MONTH,
       status: TransactionStatus.ALL,
+      token: accessToken,
     });
   }
 );

@@ -5,7 +5,7 @@ import { injectable } from "inversify";
 @injectable()
 export class AuthService implements IAuthService {
   constructor(
-    private readonly baseUrl: string = "",
+    private readonly baseUrl: string = import.meta.env.VITE_API_BASE_URL,
     private readonly storage = localStorage,
     private readonly authKey = "tracker"
   ) {}

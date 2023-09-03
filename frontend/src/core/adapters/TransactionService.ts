@@ -11,19 +11,20 @@ import { injectable } from "inversify";
 @injectable()
 export class TransactionService implements ITransactionService {
   constructor(
-    private readonly baseUrl: string,
-    private readonly token: string
+    private readonly baseUrl: string = import.meta.env.VITE_API_BASE_URL
   ) {}
   async fetchTransactions({
     period,
     status,
     limit,
     page,
+    token,
   }: {
     limit: number;
     period: TransactionPeriod;
     status: TransactionStatus;
     page?: string;
+    token: string;
   }): Promise<ResponseDTO<PagedDTO<Transaction>>> {
     const url = new URL(`${this.baseUrl}/wallet/payments`);
     url.searchParams.append("limit", "" + limit);
@@ -36,7 +37,7 @@ export class TransactionService implements ITransactionService {
     }
     const resp = await fetch(url.toString(), {
       method: "GET",
-      headers: { Authorization: `Bearer ${this.token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (resp.status !== 200) {
       throw new Error("Não foi possível listar as transações");
@@ -45,13 +46,14 @@ export class TransactionService implements ITransactionService {
   }
 
   async addTransaction(
-    body: Partial<Transaction>
+    body: Partial<Transaction>,
+    token: string
   ): Promise<ResponseDTO<Transaction>> {
     const url = new URL(`${this.baseUrl}/wallet/payments`);
     const resp = await fetch(url.toString(), {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${this.token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
@@ -62,12 +64,12 @@ export class TransactionService implements ITransactionService {
     return (await resp.json()) as ResponseDTO<Transaction>;
   }
 
-  async deleteTransaction(id: string): Promise<void> {
+  async deleteTransaction(id: string, token: string): Promise<void> {
     const url = new URL(`${this.baseUrl}/wallet/payments/${id}`);
     const resp = await fetch(url.toString(), {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${this.token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (resp.status !== 204) {
