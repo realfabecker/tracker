@@ -6,7 +6,9 @@ import {
   TransactionStatus,
 } from "@core/domain/domain";
 import { ITransactionService } from "@core/ports/ports";
+import { injectable } from "inversify";
 
+@injectable()
 export class TransactionService implements ITransactionService {
   constructor(
     private readonly baseUrl: string,

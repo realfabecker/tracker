@@ -1,6 +1,8 @@
 import { LoginDTO, ResponseDTO } from "@core/domain/domain";
 import { IAuthService } from "@core/ports/ports";
+import { injectable } from "inversify";
 
+@injectable()
 export class AuthService implements IAuthService {
   constructor(
     private readonly baseUrl: string = "",
