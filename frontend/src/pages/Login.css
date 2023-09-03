@@ -1,0 +1,30 @@
+form#login {
+    margin-top: 2.5rem;
+}
+
+form#login input {
+    width: 100%;
+    padding: .25rem .5rem;
+    border-radius: .25rem;
+}
+
+form#login div.basic {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    margin-bottom: .25rem;
+}
+
+form#login div.error {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #c11;
+}
+
+form#login button {
+    width: 100%;
+    margin-top: .25rem;    
+    border-radius: .25rem;
+    padding: .5rem;
+    background-color: #ddd;
+}

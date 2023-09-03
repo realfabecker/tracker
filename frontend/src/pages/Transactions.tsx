@@ -1,9 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
-
 import { asBrl, asDate } from "@core/lib/formatter";
 import {
   ActionStatus,
-  IRootStore,
   Transaction,
   TransactionStatus,
   TransactionType,
@@ -13,13 +11,13 @@ import {
   getActionDeleteTransaction,
   getActionLoadTransactionsList,
 } from "@store/transactions/creators/transactions";
+import { useAppDispatch, useAppSelector } from "@store/store";
 
 import "./Transactions.css";
-import { useAppDispatch, useAppSelector } from "@store/store";
 
 function ItemAdd() {
   const dispatch = useAppDispatch();
-  const store = useAppSelector((d: IRootStore) => d["transactions/add"]);
+  const store = useAppSelector((d) => d.transactions["transactions/add"]);
 
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
@@ -45,12 +43,13 @@ function ItemAdd() {
       status: TransactionStatus.PENDING,
     };
 
+    //@ts-ignore
     dispatch(getActionCreateTransaction(transaction));
   }
 
   return (
     <>
-      <form onSubmit={handleFormSubmit}>
+      <form id="transaction" onSubmit={handleFormSubmit}>
         <div className="basic">
           <input
             type="text"
@@ -93,13 +92,11 @@ function ItemAdd() {
 function ItemList() {
   const dispatch = useAppDispatch();
 
-  const transactions = useAppSelector((state: IRootStore) => {
-    return {
-      list: state["transactions/list"],
-    };
-  });
+  const transactions = useAppSelector(
+    (state) => state.transactions["transactions/list"]
+  );
 
-  if (transactions.list.status === ActionStatus.LOADING) {
+  if (transactions.status === ActionStatus.LOADING) {
     return (
       <div className="transactions loading">
         <span>Loading...</span>
@@ -107,7 +104,7 @@ function ItemList() {
     );
   }
 
-  if (transactions.list.status === ActionStatus.ERROR) {
+  if (transactions.status === ActionStatus.ERROR) {
     return (
       <div className="transactions error">
         <span>Erro ao consultar listagem de transações</span>
@@ -117,13 +114,16 @@ function ItemList() {
 
   return (
     <div className="transactions">
-      {transactions.list.data.map((t) => (
+      {transactions.data?.map((t) => (
         <div className="transaction" key={t.id}>
           <div className="left">
             <div>
               <button
                 style={{ all: "unset" }}
-                onClick={() => dispatch(getActionDeleteTransaction(t.id))}
+                onClick={() => {
+                  //@ts-ignore
+                  dispatch(getActionDeleteTransaction(t.id));
+                }}
               >
                 <span className="trash">{`\u267B`}</span>
               </button>
@@ -148,10 +148,10 @@ function ItemList() {
 
 function ItemHeader() {
   const transactions = useAppSelector(
-    (state: IRootStore) => state["transactions/list"]
+    (state) => state.transactions["transactions/list"]
   );
 
-  const total = transactions.data.reduce((acc, v) => {
+  const total = (transactions.data || []).reduce((acc, v) => {
     return acc + (v.type == TransactionType.EXPENSE ? -1 * v.value : v.value);
   }, 0);
 
@@ -168,6 +168,7 @@ export default function Transactions() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    //@ts-ignore
     dispatch(getActionLoadTransactionsList());
   }, [dispatch]);
 

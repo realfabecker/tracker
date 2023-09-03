@@ -48,21 +48,6 @@ export enum ActionStatus {
   LOADING = "loading",
 }
 
-export interface IRootStore {
-  "transactions/add": {
-    status: ActionStatus;
-    error?: { message: string };
-  };
-  "transactions/del": {
-    status: ActionStatus;
-    error?: { message: string };
-  };
-  "transactions/list": {
-    data: Transaction[];
-    status: ActionStatus;
-  };
-}
-
 export interface LoginDTO {
   RefreshToken: string;
   AccessToken: string;
