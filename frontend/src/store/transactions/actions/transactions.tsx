@@ -1,29 +1,13 @@
-import { ActionStatus, Transaction } from "@core/domain/domain";
-
 export enum TransactionsActions {
-  TRANSACTION_ADDED = "TRANSACTION_ADDED",
+  TRANSACTION_DEL_PENDING = "transactions/del/pending",
+  TRANSACTION_DEL_REJECTED = "transactions/del/rejected",
+  TRANSACTION_DEL_FULFILLED = "transactions/del/fulfilled",
 
-  TRANSACTION_LIST_LOADING = "TRANSACTION_LIST_LOADING",
-  TRANSACTION_LIST_ERROR = "TRANSACTION_LIST_ERROR",
-  TRANSACTION_LIST_LOADED = "TRANSACTION_LIST_LOADED",
+  TRANSACTION_ADD_PENDING = "transactions/add/pending",
+  TRANSACTION_ADD_REJECTED = "transactions/add/rejected",
+  TRANSACTION_ADD_FULFILLED = "transactions/add/fulfilled",
+
+  TRANSACTION_LIST_PENDING = "transactions/list/pending",
+  TRANSACTION_LIST_REJECTED = "transactions/list/rejected",
+  TRANSACTION_LIST_FULFILLED = "transactions/list/fulfilled",
 }
-
-export const transactionAdded = (transaction: Transaction) => ({
-  type: TransactionsActions.TRANSACTION_ADDED,
-  data: { transaction },
-});
-
-export const transactionListError = () => ({
-  type: TransactionsActions.TRANSACTION_LIST_ERROR,
-  data: { status: ActionStatus.ERROR },
-});
-
-export const transactionListLoading = () => ({
-  type: TransactionsActions.TRANSACTION_LIST_LOADING,
-  data: { status: ActionStatus.LOADING },
-});
-
-export const transactionListLoaded = (transactions: Transaction[]) => ({
-  type: TransactionsActions.TRANSACTION_LIST_LOADED,
-  data: { status: ActionStatus.DONE, transactions },
-});

@@ -37,12 +37,14 @@ export class TransactionService implements ITransactionService {
       headers: { Authorization: `Bearer ${this.token}` },
     });
     if (resp.status !== 200) {
-      throw new Error("Não foi possível listar os pagamentos");
+      throw new Error("Não foi possível listar as transações");
     }
     return (await resp.json()) as ResponseDTO<PagedDTO<Transaction>>;
   }
 
-  async addTransaction(body: Transaction): Promise<ResponseDTO<Transaction>> {
+  async addTransaction(
+    body: Partial<Transaction>
+  ): Promise<ResponseDTO<Transaction>> {
     const url = new URL(`${this.baseUrl}/wallet/payments`);
     const resp = await fetch(url.toString(), {
       method: "POST",
@@ -53,8 +55,21 @@ export class TransactionService implements ITransactionService {
       body: JSON.stringify(body),
     });
     if (resp.status !== 200) {
-      throw new Error("Não foi possível realizar o cadastro do pagamento");
+      throw new Error("Não foi possível realizar o cadastro da transação");
     }
     return (await resp.json()) as ResponseDTO<Transaction>;
+  }
+
+  async deleteTransaction(id: string): Promise<void> {
+    const url = new URL(`${this.baseUrl}/wallet/payments/${id}`);
+    const resp = await fetch(url.toString(), {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (resp.status !== 204) {
+      throw new Error("Não foi possível excluir a transação");
+    }
   }
 }

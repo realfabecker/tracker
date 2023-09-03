@@ -40,6 +40,12 @@ form div.basic {
     margin-bottom: .25rem;
 }
 
+form div.error {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #c11;
+}
+
 form button {
     width: 100%;
     margin-top: .25rem;    
@@ -78,6 +84,13 @@ div.transaction div.description {
 
 div.transaction div.left {
     text-align: left;
+    display: flex;
+    gap: 1rem;
+}
+
+div.transaction div.left span.trash {
+    color: #c11;
+    cursor: pointer;
 }
 
 div.transaction div.right {

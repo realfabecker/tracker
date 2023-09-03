@@ -49,8 +49,16 @@ export enum ActionStatus {
 }
 
 export interface IRootStore {
-  transactions: {
-    list: Transaction[];
+  "transactions/add": {
+    status: ActionStatus;
+    error?: { message: string };
+  };
+  "transactions/del": {
+    status: ActionStatus;
+    error?: { message: string };
+  };
+  "transactions/list": {
+    data: Transaction[];
     status: ActionStatus;
   };
 }

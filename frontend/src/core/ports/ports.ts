@@ -12,8 +12,8 @@ export interface ITransactionService {
     status: string;
     page?: string;
   }): Promise<ResponseDTO<PagedDTO<Transaction>>>;
-
   addTransaction(body: Transaction): Promise<ResponseDTO<Transaction>>;
+  deleteTransaction(id: string): Promise<void>;
 }
 
 export interface IAuthService {
