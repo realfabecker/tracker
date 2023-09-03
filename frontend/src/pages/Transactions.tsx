@@ -28,9 +28,10 @@ function ItemAdd() {
 
     const {
       groups: { type, value, title },
-    } = name.match(/(?<type>\+|-)(?<value>\d+)\s{1}(?<title>\w+)/) as {
+    } = name.match(/(?<type>\+|-)(?<n>\d+(\.\d{2})?)\s{1}(?<title>\w+)/) as {
       groups: any;
     };
+
     const transaction: Partial<Transaction> = {
       type: type === "+" ? TransactionType.INCOME : TransactionType.EXPENSE,
       title: title,
@@ -52,7 +53,7 @@ function ItemAdd() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="+200 Bethesda Starfield"
-          pattern="^(\+|-)\d+\s{1}\w+"
+          pattern="^(\+|-)\d+(\.\d{2})?\s{1}.+"
           required
         ></input>
         <input
@@ -92,7 +93,7 @@ function ItemList() {
   if (transactions.status === ActionStatus.ERROR) {
     return (
       <div className="transactions error">
-        <span>Erro...</span>
+        <span>Erro ao consultar listagem de transações</span>
       </div>
     );
   }

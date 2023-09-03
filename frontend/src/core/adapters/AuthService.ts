@@ -3,7 +3,7 @@ import { IAuthService } from "@core/ports/ports";
 
 export class AuthService implements IAuthService {
   constructor(
-    private readonly baseUrl: string,
+    private readonly baseUrl: string = "",
     private readonly storage = localStorage,
     private readonly authKey = "tracker"
   ) {}

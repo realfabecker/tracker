@@ -1,11 +1,14 @@
 import "./App.css";
 
 import Transactions from "@pages/Transactions";
+import Protected from "./Protected";
 
 function App() {
   return (
     <main>
-      <Transactions />
+      <Protected>
+        <Transactions />
+      </Protected>
     </main>
   );
 }

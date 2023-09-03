@@ -11,9 +11,7 @@ export class TransactionService implements ITransactionService {
   constructor(
     private readonly baseUrl: string,
     private readonly token: string
-  ) {
-    this.baseUrl = "http://localhost:3001/api";
-  }
+  ) {}
   async fetchTransactions({
     period,
     status,
