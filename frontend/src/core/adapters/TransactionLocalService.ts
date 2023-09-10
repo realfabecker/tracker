@@ -1,3 +1,4 @@
+import { injectable } from "inversify";
 import {
   PagedDTO,
   Transaction,
@@ -6,8 +7,6 @@ import {
   TransactionStatus,
 } from "@core/domain/domain";
 import { ITransactionService } from "@core/ports/ports";
-
-import { injectable } from "inversify";
 
 @injectable()
 export class TransactionsLocalService implements ITransactionService {
@@ -62,5 +61,37 @@ export class TransactionsLocalService implements ITransactionService {
     );
     const data = items.filter((i) => i.id !== id);
     localStorage.setItem("transactions", JSON.stringify(data));
+  }
+
+  async getTransaction(id: string): Promise<ResponseDTO<Transaction>> {
+    const items: Partial<Transaction>[] = JSON.parse(
+      localStorage.getItem("transactions") || "[]"
+    );
+    const data = items.filter((i) => i.id == id);
+    return {
+      status: "success",
+      data: data[0] as Transaction,
+    };
+  }
+
+  async editTransaction(
+    id: string,
+    body: Partial<Transaction>,
+    token: string
+  ): Promise<ResponseDTO<Transaction>> {
+    console.log({ id, body, token });
+    const items: Partial<Transaction>[] = JSON.parse(
+      localStorage.getItem("transactions") || "[]"
+    );
+    const index = items.findIndex((i) => i.id == id);
+    items[index] = {
+      ...items[index],
+      ...body,
+    };
+    localStorage.setItem("transactions", JSON.stringify(items));
+    return {
+      status: "success",
+      data: items[index] as Transaction,
+    };
   }
 }

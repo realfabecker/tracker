@@ -1,3 +1,4 @@
+import { injectable } from "inversify";
 import {
   PagedDTO,
   Transaction,
@@ -6,7 +7,6 @@ import {
   TransactionStatus,
 } from "@core/domain/domain";
 import { ITransactionService } from "@core/ports/ports";
-import { injectable } from "inversify";
 
 @injectable()
 export class TransactionsHttpService implements ITransactionService {
@@ -75,5 +75,24 @@ export class TransactionsHttpService implements ITransactionService {
     if (resp.status !== 204) {
       throw new Error("Não foi possível excluir a transação");
     }
+  }
+
+  async editTransaction(
+    id: string,
+    body: Partial<Transaction>,
+    token: string
+  ): Promise<ResponseDTO<Transaction>> {
+    console.log({ id, body, token });
+    //@ts-ignore
+    return {};
+  }
+
+  async getTransaction(
+    id: string,
+    token: string
+  ): Promise<ResponseDTO<Transaction>> {
+    console.log({ id, token });
+    //@ts-ignore
+    return {};
   }
 }

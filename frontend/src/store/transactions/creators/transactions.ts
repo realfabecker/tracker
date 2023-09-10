@@ -8,6 +8,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Container } from "inversify";
 import { IAuthService, ITransactionService } from "@core/ports/ports";
 import { Types } from "@core/container/types";
+import { NavigateFunction } from "react-router";
 
 export const getActionDeleteTransaction = createAsyncThunk(
   "transactions/del",
@@ -58,5 +59,29 @@ export const getActionLoadTransactionsList = createAsyncThunk(
       status: TransactionStatus.ALL,
       token: accessToken,
     });
+  }
+);
+
+export const getActionUpdateTransaction = createAsyncThunk(
+  "transactions/edit",
+  async (
+    props: {
+      id: string;
+      transaction: Partial<Transaction>;
+      navigate: NavigateFunction;
+    },
+    { dispatch, extra }
+  ) => {
+    const container = (<any>extra).container as Container;
+
+    const authService = container.get<IAuthService>(Types.AuthService);
+    const accessToken = authService.getAccessToken() as string;
+
+    const tranService = container.get<ITransactionService>(
+      Types.TransactionsService
+    );
+    await tranService.editTransaction(props.id, props.transaction, accessToken);
+    dispatch(getActionLoadTransactionsList());
+    props.navigate("/transactions");
   }
 );

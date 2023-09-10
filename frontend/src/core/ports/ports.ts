@@ -18,6 +18,12 @@ export interface ITransactionService {
     body: Partial<Transaction>,
     token: string
   ): Promise<ResponseDTO<Transaction>>;
+  editTransaction(
+    id: string,
+    body: Partial<Transaction>,
+    token: string
+  ): Promise<ResponseDTO<Transaction>>;
+  getTransaction(id: string, token: string): Promise<ResponseDTO<Transaction>>;
   deleteTransaction(id: string, token: string): Promise<void>;
 }
 

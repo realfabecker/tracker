@@ -1,6 +1,6 @@
+import { injectable } from "inversify";
 import { LoginDTO, ResponseDTO } from "@core/domain/domain";
 import { IAuthService } from "@core/ports/ports";
-import { injectable } from "inversify";
 
 @injectable()
 export class AuthLocalService implements IAuthService {

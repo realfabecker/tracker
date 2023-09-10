@@ -15,6 +15,9 @@ const initialState = {
   "transactions/add": {
     status: ActionStatus.IDLE,
   } as State,
+  "transactions/edit": {
+    status: ActionStatus.IDLE,
+  } as State,
   "transactions/del": {
     status: ActionStatus.IDLE,
   } as State,

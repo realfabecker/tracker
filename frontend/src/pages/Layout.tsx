@@ -7,7 +7,7 @@ export const PubLayout = () => {
   const service = useInjection<IAuthService>(Types.AuthService);
 
   if (service.isLoggedIn()) {
-    return <Navigate to="/" />;
+    return <Navigate to="/transactions" />;
   }
 
   return <Outlet />;

@@ -99,6 +99,11 @@ div.transaction div.left {
     gap: 1rem;
 }
 
+div.transaction div.left span.edit {
+    color: rgb(175, 182, 74);
+    cursor: pointer;
+}
+
 div.transaction div.left span.trash {
     color: #c11;
     cursor: pointer;

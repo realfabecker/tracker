@@ -17,7 +17,7 @@ export const getActionAuthLogin = createAsyncThunk(
     const container = (<any>extra).container as Container;
     const authService = container.get<IAuthService>(Types.AuthService);
     await authService.login({ email, password });
-    navigate("/");
+    navigate("/transactions");
   }
 );
 

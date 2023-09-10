@@ -7,6 +7,10 @@ export enum TransactionsActions {
   TRANSACTION_ADD_REJECTED = "transactions/add/rejected",
   TRANSACTION_ADD_FULFILLED = "transactions/add/fulfilled",
 
+  TRANSACTION_EDIT_PENDING = "transactions/edit/pending",
+  TRANSACTION_EDIT_REJECTED = "transactions/edit/rejected",
+  TRANSACTION_EDIT_FULFILLED = "transactions/edit/fulfilled",
+
   TRANSACTION_LIST_PENDING = "transactions/list/pending",
   TRANSACTION_LIST_REJECTED = "transactions/list/rejected",
   TRANSACTION_LIST_FULFILLED = "transactions/list/fulfilled",

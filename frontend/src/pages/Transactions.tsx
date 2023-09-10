@@ -1,14 +1,8 @@
-import { useNavigate } from "react-router";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router";
+import { useEffect } from "react";
 import { asBrl, asDate } from "@core/lib/formatter";
+import { ActionStatus, TransactionType } from "@core/domain/domain";
 import {
-  ActionStatus,
-  Transaction,
-  TransactionStatus,
-  TransactionType,
-} from "@core/domain/domain";
-import {
-  getActionCreateTransaction,
   getActionDeleteTransaction,
   getActionLoadTransactionsList,
 } from "@store/transactions/creators/transactions";
@@ -17,83 +11,9 @@ import { getActionAuthLogout } from "@store/auth/creators/auth";
 
 import "./Transactions.css";
 
-function ItemAdd() {
-  const dispatch = useAppDispatch();
-  const store = useAppSelector((d) => d.transactions["transactions/add"]);
-
-  const [name, setName] = useState("");
-  const [desc, setDesc] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-
-  const handleFormSubmit = useCallback(
-    (e: FormEvent) => {
-      e.preventDefault();
-
-      const {
-        groups: { type, value, title },
-      } = name.match(
-        /(?<type>\+|-)(?<value>\d+(\.\d{2})?)\s{1}(?<title>\w+)/
-      ) as {
-        groups: any;
-      };
-
-      const transaction: Partial<Transaction> = {
-        type: type === "+" ? TransactionType.INCOME : TransactionType.EXPENSE,
-        title: title,
-        description: desc,
-        value: Number(value),
-        dueDate: new Date(date).toISOString(),
-        status: TransactionStatus.PENDING,
-      };
-      dispatch(getActionCreateTransaction(transaction));
-    },
-    [date, desc, name, dispatch]
-  );
-
-  return (
-    <>
-      <form id="transaction" onSubmit={handleFormSubmit}>
-        <div className="basic">
-          <input
-            type="text"
-            id="title"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="+200 Bethesda Starfield"
-            pattern="^(\+|-)\d+(\.\d{2})?\s{1}.+"
-            required
-          ></input>
-          <input
-            type="date"
-            id="dueDate"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-        </div>
-        <div className="description">
-          <input
-            type="text"
-            id="description"
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-            placeholder="descrição"
-            required
-          ></input>
-        </div>
-        <button type="submit" disabled={store.status === ActionStatus.LOADING}>
-          {store.status === ActionStatus.LOADING ? "Loading..." : "Novo"}
-        </button>
-        {store.error?.message && (
-          <div className="error">{store.error.message}</div>
-        )}
-      </form>
-    </>
-  );
-}
-
 function ItemList() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const transactions = useAppSelector(
     (state) => state.transactions["transactions/list"]
@@ -120,8 +40,18 @@ function ItemList() {
       {transactions.data?.map((t) => (
         <div className="transaction" key={t.id}>
           <div className="left">
-            <div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <button
+                id="edit"
+                style={{ all: "unset" }}
+                title="Edit"
+                onClick={() => navigate(`/transactions/${t.id}`)}
+              >
+                <span className="edit">{`\u270E`}</span>
+              </button>
+              <button
+                id="remove"
+                title="Remove"
                 style={{ all: "unset" }}
                 onClick={() => dispatch(getActionDeleteTransaction(t.id))}
               >
@@ -167,9 +97,7 @@ function ItemHeader() {
       </h1>
       <button
         title="Logout"
-        onClick={() => {
-          dispatch(getActionAuthLogout({ navigate }));
-        }}
+        onClick={() => dispatch(getActionAuthLogout({ navigate }))}
       >{`\u27F6`}</button>
     </header>
   );
@@ -185,7 +113,7 @@ export default function Transactions() {
   return (
     <main>
       <ItemHeader />
-      <ItemAdd />
+      <Outlet />
       <ItemList />
     </main>
   );
