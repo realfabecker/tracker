@@ -1,8 +1,16 @@
 import { Container as InversifyContainer } from "inversify";
-import { AuthService } from "@core/adapters/AuthService";
-import { TransactionService } from "@core/adapters/TransactionService";
+
 import { Types } from "@core/container/types";
+import { TransactionsLocalService } from "@core/adapters/TransactionLocalService";
+import { AuthLocalService } from "@core/adapters/AuthLocalService";
+import { AuthHttpService } from "@core/adapters/AuthHttpService";
+import { TransactionsHttpService } from "@core/adapters/TransactionHttpService";
 
 export const container = new InversifyContainer();
-container.bind(Types.AuthService).to(AuthService);
-container.bind(Types.TransactionsService).to(TransactionService);
+if (import.meta.env.MODE === "development") {
+  container.bind(Types.AuthService).to(AuthLocalService);
+  container.bind(Types.TransactionsService).to(TransactionsLocalService);
+} else {
+  container.bind(Types.AuthService).to(AuthHttpService);
+  container.bind(Types.TransactionsService).to(TransactionsHttpService);
+}

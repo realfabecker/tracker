@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { asBrl, asDate } from "@core/lib/formatter";
 import {
   ActionStatus,
@@ -23,29 +23,32 @@ function ItemAdd() {
   const [desc, setDesc] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
 
-  function handleFormSubmit(e: FormEvent) {
-    e.preventDefault();
+  const handleFormSubmit = useCallback(
+    (e: FormEvent) => {
+      e.preventDefault();
 
-    const {
-      groups: { type, value, title },
-    } = name.match(
-      /(?<type>\+|-)(?<value>\d+(\.\d{2})?)\s{1}(?<title>\w+)/
-    ) as {
-      groups: any;
-    };
+      const {
+        groups: { type, value, title },
+      } = name.match(
+        /(?<type>\+|-)(?<value>\d+(\.\d{2})?)\s{1}(?<title>\w+)/
+      ) as {
+        groups: any;
+      };
 
-    const transaction: Partial<Transaction> = {
-      type: type === "+" ? TransactionType.INCOME : TransactionType.EXPENSE,
-      title: title,
-      description: desc,
-      value: Number(value),
-      dueDate: new Date(date).toISOString(),
-      status: TransactionStatus.PENDING,
-    };
+      const transaction: Partial<Transaction> = {
+        type: type === "+" ? TransactionType.INCOME : TransactionType.EXPENSE,
+        title: title,
+        description: desc,
+        value: Number(value),
+        dueDate: new Date(date).toISOString(),
+        status: TransactionStatus.PENDING,
+      };
 
-    //@ts-ignore
-    dispatch(getActionCreateTransaction(transaction));
-  }
+      //@ts-ignore
+      dispatch(getActionCreateTransaction(transaction));
+    },
+    [date, desc, name, dispatch]
+  );
 
   return (
     <>
@@ -120,10 +123,7 @@ function ItemList() {
             <div>
               <button
                 style={{ all: "unset" }}
-                onClick={() => {
-                  //@ts-ignore
-                  dispatch(getActionDeleteTransaction(t.id));
-                }}
+                onClick={() => dispatch(getActionDeleteTransaction(t.id))}
               >
                 <span className="trash">{`\u267B`}</span>
               </button>
@@ -168,7 +168,6 @@ export default function Transactions() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    //@ts-ignore
     dispatch(getActionLoadTransactionsList());
   }, [dispatch]);
 

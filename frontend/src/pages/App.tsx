@@ -12,7 +12,7 @@ function App() {
   const { status } = useAppSelector((state) => state["auth"]["auth/login"]);
   const service = useInjection<IAuthService>(Types.AuthService);
 
-  if (service.isLoggedIn() || status === ActionStatus.DONE) {
+  if (service.isLoggedIn() && status === ActionStatus.DONE) {
     return (
       <main>
         <Transactions />

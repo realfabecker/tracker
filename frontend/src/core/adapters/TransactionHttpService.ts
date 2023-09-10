@@ -9,7 +9,7 @@ import { ITransactionService } from "@core/ports/ports";
 import { injectable } from "inversify";
 
 @injectable()
-export class TransactionService implements ITransactionService {
+export class TransactionsHttpService implements ITransactionService {
   constructor(
     private readonly baseUrl: string = import.meta.env.VITE_API_BASE_URL
   ) {}

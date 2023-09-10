@@ -3,7 +3,7 @@ import { IAuthService } from "@core/ports/ports";
 import { injectable } from "inversify";
 
 @injectable()
-export class AuthService implements IAuthService {
+export class AuthHttpService implements IAuthService {
   constructor(
     private readonly baseUrl: string = import.meta.env.VITE_API_BASE_URL,
     private readonly storage = localStorage,
