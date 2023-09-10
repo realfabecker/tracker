@@ -4,9 +4,11 @@ import { getActionAuthLogin } from "@store/auth/creators/auth";
 import { ActionStatus } from "@core/domain/domain";
 
 import "./Login.css";
+import { useNavigate } from "react-router";
 
 export default function Login() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const store = useAppSelector((state) => state["auth"]["auth/login"]);
 
@@ -19,8 +21,7 @@ export default function Login() {
         id="login"
         onSubmit={(e) => {
           e.preventDefault();
-          //@ts-ignore
-          dispatch(getActionAuthLogin({ email, password: passw }));
+          dispatch(getActionAuthLogin({ email, password: passw, navigate }));
         }}
       >
         <div className="basic">

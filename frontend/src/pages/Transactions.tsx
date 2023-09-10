@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { asBrl, asDate } from "@core/lib/formatter";
 import {
@@ -12,6 +13,7 @@ import {
   getActionLoadTransactionsList,
 } from "@store/transactions/creators/transactions";
 import { useAppDispatch, useAppSelector } from "@store/store";
+import { getActionAuthLogout } from "@store/auth/creators/auth";
 
 import "./Transactions.css";
 
@@ -43,8 +45,6 @@ function ItemAdd() {
         dueDate: new Date(date).toISOString(),
         status: TransactionStatus.PENDING,
       };
-
-      //@ts-ignore
       dispatch(getActionCreateTransaction(transaction));
     },
     [date, desc, name, dispatch]
@@ -147,6 +147,9 @@ function ItemList() {
 }
 
 function ItemHeader() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const transactions = useAppSelector(
     (state) => state.transactions["transactions/list"]
   );
@@ -157,10 +160,18 @@ function ItemHeader() {
 
   const [n, f] = total.toFixed(2).split(".");
   return (
-    <h1 className={`summary`}>
-      R$ {n}
-      <span>,{f}</span>
-    </h1>
+    <header>
+      <h1 className={`summary`}>
+        R$ {n}
+        <span>,{f}</span>
+      </h1>
+      <button
+        title="Logout"
+        onClick={() => {
+          dispatch(getActionAuthLogout({ navigate }));
+        }}
+      >{`\u27F6`}</button>
+    </header>
   );
 }
 

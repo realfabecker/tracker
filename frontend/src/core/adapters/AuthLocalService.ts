@@ -36,4 +36,8 @@ export class AuthLocalService implements IAuthService {
   isLoggedIn(): boolean {
     return !!this.storage.getItem(this.authKey);
   }
+
+  logout(): void {
+    this.storage.removeItem(this.authKey);
+  }
 }

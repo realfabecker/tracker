@@ -59,4 +59,8 @@ export class AuthHttpService implements IAuthService {
       return false;
     }
   }
+
+  logout(): void {
+    this.storage.removeItem(this.authKey);
+  }
 }

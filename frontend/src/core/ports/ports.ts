@@ -31,4 +31,5 @@ export interface IAuthService {
   }) => Promise<void>;
   isLoggedIn(): boolean;
   getAccessToken(): string | undefined;
+  logout(): void;
 }

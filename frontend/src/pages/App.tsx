@@ -1,28 +1,23 @@
-import { useInjection } from "inversify-react";
-import { ActionStatus } from "@core/domain/domain";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "@pages/Login";
 import Transactions from "@pages/Transactions";
-import { useAppSelector } from "@store/store";
-import { IAuthService } from "@core/ports/ports";
-import { Types } from "@core/container/types";
+import { PrivLayout, PubLayout } from "@pages/Layout";
 
 import "./App.css";
 
 function App() {
-  const { status } = useAppSelector((state) => state["auth"]["auth/login"]);
-  const service = useInjection<IAuthService>(Types.AuthService);
-
-  if (service.isLoggedIn() && status === ActionStatus.DONE) {
-    return (
-      <main>
-        <Transactions />
-      </main>
-    );
-  }
-
   return (
     <main>
-      <Login />
+      <BrowserRouter>
+        <Routes>
+          <Route element={<PubLayout />}>
+            <Route path="/login" element={<Login />} />
+          </Route>
+          <Route element={<PrivLayout />}>
+            <Route path="/" element={<Transactions />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </main>
   );
 }
