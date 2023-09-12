@@ -6,6 +6,7 @@ import { ActionStatus, Transaction } from "@core/domain/domain";
 import { ITransactionService } from "@core/ports/ports";
 import { useAppDispatch, useAppSelector } from "@store/store";
 import { getActionUpdateTransaction } from "@store/transactions/creators/transactions";
+import { asBrl } from "@core/lib/formatter";
 
 function TransactionsEdit() {
   const dispatch = useAppDispatch();
@@ -20,8 +21,9 @@ function TransactionsEdit() {
 
   useEffect(() => {
     (async () => {
-      const transaction = await service.getTransaction(id + "", "");
-      setName(`${transaction.data.value} ${transaction.data.title}`);
+      const transaction = await service.getTransaction(id as string);
+
+      setName(`${asBrl(transaction.data.value)} ${transaction.data.title}`);
       setDesc(transaction.data.description);
       setDate(transaction.data.dueDate.slice(0, 10));
     })();
@@ -32,13 +34,13 @@ function TransactionsEdit() {
       e.preventDefault();
       const {
         groups: { value, title },
-      } = name.match(/(?<value>\d+(\.\d{2})?)\s{1}(?<title>.+)/) as {
+      } = name.match(/R\$\s{1}(?<value>\d+(,\d{2})?)\s{1}(?<title>.+)/) as {
         groups: any;
       };
       const transaction: Partial<Transaction> = {
         title: title,
         description: desc,
-        value: Number(value),
+        value: Number(value.replace(",", ".")),
       };
       const payload = { id: id as string, transaction, navigate };
       dispatch(getActionUpdateTransaction(payload));
@@ -55,8 +57,8 @@ function TransactionsEdit() {
             id="title"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="+200 Bethesda Starfield"
-            pattern="^\d+(\.\d{2})?\s{1}.+"
+            placeholder="200 Bethesda Skyrim"
+            pattern="^R\$\s{1}\d+(,\d{2})?\s{1}.+"
             required
           ></input>
           <input

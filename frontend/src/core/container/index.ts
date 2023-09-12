@@ -1,10 +1,10 @@
 import { Container as InversifyContainer } from "inversify";
 
 import { Types } from "@core/container/types";
-import { TransactionsLocalService } from "@core/adapters/TransactionLocalService";
-import { AuthLocalService } from "@core/adapters/AuthLocalService";
 import { AuthHttpService } from "@core/adapters/AuthHttpService";
 import { TransactionsHttpService } from "@core/adapters/TransactionHttpService";
+import { TransactionsLocalService } from "@core/adapters/TransactionLocalService";
+import { AuthLocalService } from "@core/adapters/AuthLocalService";
 
 export const container = new InversifyContainer();
 if (import.meta.env.MODE === "development") {

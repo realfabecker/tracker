@@ -5,6 +5,7 @@ import {
   getActionCreateTransaction,
   getActionDeleteTransaction,
   getActionLoadTransactionsList,
+  getActionUpdateTransaction,
 } from "@store/transactions/creators/transactions";
 
 const initialState = {
@@ -89,6 +90,26 @@ export const transactionSlice = createSlice({
       getActionCreateTransaction.rejected,
       (state: TransactionsState) => {
         state["transactions/add"]["status"] = ActionStatus.ERROR;
+      }
+    );
+    builder.addCase(
+      getActionUpdateTransaction.pending,
+      (state: TransactionsState) => {
+        state["transactions/edit"]["status"] = ActionStatus.LOADING;
+      }
+    );
+    builder.addCase(
+      getActionUpdateTransaction.fulfilled,
+      (state: TransactionsState) => {
+        state["transactions/edit"] = {
+          status: ActionStatus.DONE,
+        };
+      }
+    );
+    builder.addCase(
+      getActionUpdateTransaction.rejected,
+      (state: TransactionsState) => {
+        state["transactions/edit"]["status"] = ActionStatus.ERROR;
       }
     );
   },

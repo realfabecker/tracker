@@ -1,4 +1,4 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import {
   PagedDTO,
   Transaction,
@@ -6,11 +6,13 @@ import {
   TransactionPeriod,
   TransactionStatus,
 } from "@core/domain/domain";
-import { ITransactionService } from "@core/ports/ports";
+import { type IAuthService, ITransactionService } from "@core/ports/ports";
+import { Types } from "@core/container/types";
 
 @injectable()
 export class TransactionsHttpService implements ITransactionService {
   constructor(
+    @inject(Types.AuthService) private readonly auth: IAuthService,
     private readonly baseUrl: string = import.meta.env.VITE_API_BASE_URL
   ) {}
   async fetchTransactions({
@@ -18,13 +20,11 @@ export class TransactionsHttpService implements ITransactionService {
     status,
     limit,
     page,
-    token,
   }: {
     limit: number;
     period: TransactionPeriod;
     status: TransactionStatus;
     page?: string;
-    token: string;
   }): Promise<ResponseDTO<PagedDTO<Transaction>>> {
     const url = new URL(`${this.baseUrl}/wallet/payments`);
     url.searchParams.append("limit", "" + limit);
@@ -37,7 +37,7 @@ export class TransactionsHttpService implements ITransactionService {
     }
     const resp = await fetch(url.toString(), {
       method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${this.auth.getAccessToken()}` },
     });
     if (resp.status !== 200) {
       throw new Error("Não foi possível listar as transações");
@@ -46,14 +46,13 @@ export class TransactionsHttpService implements ITransactionService {
   }
 
   async addTransaction(
-    body: Partial<Transaction>,
-    token: string
+    body: Partial<Transaction>
   ): Promise<ResponseDTO<Transaction>> {
     const url = new URL(`${this.baseUrl}/wallet/payments`);
     const resp = await fetch(url.toString(), {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${this.auth.getAccessToken()}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
@@ -64,12 +63,12 @@ export class TransactionsHttpService implements ITransactionService {
     return (await resp.json()) as ResponseDTO<Transaction>;
   }
 
-  async deleteTransaction(id: string, token: string): Promise<void> {
+  async deleteTransaction(id: string): Promise<void> {
     const url = new URL(`${this.baseUrl}/wallet/payments/${id}`);
     const resp = await fetch(url.toString(), {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${this.auth.getAccessToken()}`,
       },
     });
     if (resp.status !== 204) {
@@ -77,22 +76,29 @@ export class TransactionsHttpService implements ITransactionService {
     }
   }
 
-  async editTransaction(
-    id: string,
-    body: Partial<Transaction>,
-    token: string
-  ): Promise<ResponseDTO<Transaction>> {
-    console.log({ id, body, token });
-    //@ts-ignore
-    return {};
+  async editTransaction(id: string, body: Partial<Transaction>): Promise<void> {
+    const url = new URL(`${this.baseUrl}/wallet/payments/${id}`);
+    const resp = await fetch(url.toString(), {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${this.auth.getAccessToken()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (resp.status !== 204) {
+      throw new Error("Não foi possível realizar a alteraççao da transação");
+    }
   }
 
-  async getTransaction(
-    id: string,
-    token: string
-  ): Promise<ResponseDTO<Transaction>> {
-    console.log({ id, token });
-    //@ts-ignore
-    return {};
+  async getTransaction(id: string): Promise<ResponseDTO<Transaction>> {
+    const url = new URL(`${this.baseUrl}/wallet/payments/${id}`);
+    const resp = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${this.auth.getAccessToken()}`,
+      },
+    });
+    return (await resp.json()) as ResponseDTO<Transaction>;
   }
 }

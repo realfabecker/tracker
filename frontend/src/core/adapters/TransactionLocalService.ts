@@ -15,15 +15,13 @@ export class TransactionsLocalService implements ITransactionService {
     status,
     limit,
     page,
-    token,
   }: {
     limit: number;
     period: TransactionPeriod;
     status: TransactionStatus;
     page?: string;
-    token: string;
   }): Promise<ResponseDTO<PagedDTO<Transaction>>> {
-    console.log({ period, status, page, limit, token });
+    console.log({ period, status, page, limit });
     const items = JSON.parse(localStorage.getItem("transactions") || "[]");
     return {
       status: "success",
@@ -36,10 +34,9 @@ export class TransactionsLocalService implements ITransactionService {
   }
 
   async addTransaction(
-    body: Partial<Transaction>,
-    token: string
+    body: Partial<Transaction>
   ): Promise<ResponseDTO<Transaction>> {
-    console.log({ body, token });
+    console.log({ body });
     const items: Partial<Transaction>[] = JSON.parse(
       localStorage.getItem("transactions") || "[]"
     );
@@ -54,8 +51,8 @@ export class TransactionsLocalService implements ITransactionService {
     };
   }
 
-  async deleteTransaction(id: string, token: string): Promise<void> {
-    console.log({ id, token });
+  async deleteTransaction(id: string): Promise<void> {
+    console.log({ id });
     const items: Partial<Transaction>[] = JSON.parse(
       localStorage.getItem("transactions") || "[]"
     );
@@ -74,12 +71,8 @@ export class TransactionsLocalService implements ITransactionService {
     };
   }
 
-  async editTransaction(
-    id: string,
-    body: Partial<Transaction>,
-    token: string
-  ): Promise<ResponseDTO<Transaction>> {
-    console.log({ id, body, token });
+  async editTransaction(id: string, body: Partial<Transaction>): Promise<void> {
+    console.log({ id, body });
     const items: Partial<Transaction>[] = JSON.parse(
       localStorage.getItem("transactions") || "[]"
     );
@@ -89,9 +82,5 @@ export class TransactionsLocalService implements ITransactionService {
       ...body,
     };
     localStorage.setItem("transactions", JSON.stringify(items));
-    return {
-      status: "success",
-      data: items[index] as Transaction,
-    };
   }
 }

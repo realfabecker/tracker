@@ -52,3 +52,8 @@ export interface LoginDTO {
   RefreshToken: string;
   AccessToken: string;
 }
+
+export enum RoutesEnum {
+  Login = "/login",
+  Transactions = "/transactions",
+}

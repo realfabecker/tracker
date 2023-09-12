@@ -3,6 +3,7 @@ import { Container } from "inversify";
 import { Types } from "@core/container/types";
 import { IAuthService } from "@core/ports/ports";
 import { NavigateFunction } from "react-router";
+import { RoutesEnum } from "@core/domain/domain";
 
 export const getActionAuthLogin = createAsyncThunk(
   "auth/login",
@@ -17,7 +18,7 @@ export const getActionAuthLogin = createAsyncThunk(
     const container = (<any>extra).container as Container;
     const authService = container.get<IAuthService>(Types.AuthService);
     await authService.login({ email, password });
-    navigate("/transactions");
+    navigate(RoutesEnum.Transactions);
   }
 );
 
@@ -27,6 +28,6 @@ export const getActionAuthLogout = createAsyncThunk(
     const container = (<any>extra).container as Container;
     const authService = container.get<IAuthService>(Types.AuthService);
     authService.logout();
-    navigate("/login");
+    navigate(RoutesEnum.Login);
   }
 );

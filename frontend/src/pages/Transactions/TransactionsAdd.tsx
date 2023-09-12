@@ -23,7 +23,7 @@ function TransactionsAdd() {
       const {
         groups: { type, value, title },
       } = name.match(
-        /(?<type>\+|-)(?<value>\d+(\.\d{2})?)\s{1}(?<title>.+)/
+        /(?<type>\+|-)(?<value>\d+(,\d{2})?)\s{1}(?<title>.+)/
       ) as {
         groups: any;
       };
@@ -32,7 +32,7 @@ function TransactionsAdd() {
         type: type === "+" ? TransactionType.INCOME : TransactionType.EXPENSE,
         title: title,
         description: desc,
-        value: Number(value),
+        value: Number(value.replace(",", ".")),
         dueDate: new Date(date).toISOString(),
         status: TransactionStatus.PENDING,
       };
@@ -50,8 +50,8 @@ function TransactionsAdd() {
             id="title"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="+200 Bethesda Starfield"
-            pattern="^(\+|-)\d+(\.\d{2})?\s{1}.+"
+            placeholder="-200,25 Bethesda Skyrim"
+            pattern="^(\+|-)\d+(,\d{2})?\s{1}.+"
             required
           ></input>
           <input

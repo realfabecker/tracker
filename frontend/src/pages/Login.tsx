@@ -9,9 +9,7 @@ import { useNavigate } from "react-router";
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
   const store = useAppSelector((state) => state["auth"]["auth/login"]);
-
   const [email, setEmail] = useState("");
   const [passw, setPassw] = useState("");
 

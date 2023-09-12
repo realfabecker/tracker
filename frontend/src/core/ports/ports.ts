@@ -6,25 +6,16 @@ export interface ITransactionService {
     period,
     status,
     page,
-    token,
   }: {
     limit: number;
     period: string;
     status: string;
     page?: string;
-    token: string;
   }): Promise<ResponseDTO<PagedDTO<Transaction>>>;
-  addTransaction(
-    body: Partial<Transaction>,
-    token: string
-  ): Promise<ResponseDTO<Transaction>>;
-  editTransaction(
-    id: string,
-    body: Partial<Transaction>,
-    token: string
-  ): Promise<ResponseDTO<Transaction>>;
-  getTransaction(id: string, token: string): Promise<ResponseDTO<Transaction>>;
-  deleteTransaction(id: string, token: string): Promise<void>;
+  addTransaction(body: Partial<Transaction>): Promise<ResponseDTO<Transaction>>;
+  editTransaction(id: string, body: Partial<Transaction>): Promise<void>;
+  getTransaction(id: string): Promise<ResponseDTO<Transaction>>;
+  deleteTransaction(id: string): Promise<void>;
 }
 
 export interface IAuthService {
