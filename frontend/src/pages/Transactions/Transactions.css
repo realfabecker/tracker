@@ -80,8 +80,8 @@ div.transaction {
     border-top: 1px solid #888;
 }
 
-div.transaction:first-child{
-    border-top: 0;
+div.transaction:nth-child(2) {
+    border-top: 0;    
 }
 
 div.transaction div.name {
@@ -124,4 +124,12 @@ div.transaction div.price.income {
 div.transaction div.right div.datetime {
     font-size: .8rem;
     color: #888;
+}
+
+div.transactions div.filters select {
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    background-color: transparent;
+    text-align: center;
 }

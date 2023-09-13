@@ -1,7 +1,11 @@
 import { Outlet, useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { asBrl, asDate } from "@core/lib/formatter";
-import { ActionStatus, TransactionType } from "@core/domain/domain";
+import {
+  ActionStatus,
+  TransactionPeriod,
+  TransactionType,
+} from "@core/domain/domain";
 import {
   getActionDeleteTransaction,
   getActionLoadTransactionsList,
@@ -14,10 +18,15 @@ import "./Transactions.css";
 function ItemList() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [period, setPeriod] = useState("this_month");
 
   const transactions = useAppSelector(
     (state) => state.transactions["transactions/list"]
   );
+
+  useEffect(() => {
+    dispatch(getActionLoadTransactionsList(period));
+  }, [dispatch, period]);
 
   if (transactions.status === ActionStatus.LOADING) {
     return (
@@ -37,6 +46,14 @@ function ItemList() {
 
   return (
     <div className="transactions">
+      <div className="filters">
+        <select value={period} onChange={(e) => setPeriod(e.target.value)}>
+          <option value={TransactionPeriod.THIS_MONTH}>This Month</option>
+          <option value={TransactionPeriod.LAST_MONTH}>Last Month</option>
+          <option value={TransactionPeriod.NEXT_MONTH}>Next Month</option>
+        </select>
+      </div>
+
       {transactions.data?.map((t) => (
         <div className="transaction" key={t.id}>
           <div className="left">

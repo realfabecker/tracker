@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "@pages/Login";
 import Transactions from "@pages/Transactions/Transactions";
 import { PrivLayout, PubLayout } from "@pages/Layout";
@@ -22,6 +22,7 @@ function App() {
               <Route path=":id" element={<TransactionsEdit />} />
             </Route>
           </Route>
+          <Route path="*" element={<Navigate to={RoutesEnum.Transactions} />} />
         </Routes>
       </BrowserRouter>
     </main>

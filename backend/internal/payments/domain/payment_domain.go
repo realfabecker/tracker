@@ -48,7 +48,6 @@ func (p PaymentPagedDTOQuery) GetDueDate() string {
 type PaymentPeriod string
 
 const (
-	PaymentThisWeek     PaymentPeriod = "this_week"
 	PaymentThisMonth    PaymentPeriod = "this_month"
 	PaymentLastMonth    PaymentPeriod = "last_month"
 	PaymentNextMonth    PaymentPeriod = "next_month"
@@ -57,8 +56,6 @@ const (
 
 func (p PaymentPeriod) String() string {
 	switch p {
-	case PaymentThisWeek:
-		return "this_week"
 	case PaymentThisMonth:
 		return "this_month"
 	case PaymentLastMonth:
@@ -71,15 +68,8 @@ func (p PaymentPeriod) String() string {
 
 // Format
 func (p PaymentPeriod) Format() string {
-	year, month, day := time.Now().Date()
-
+	year, month, _ := time.Now().Date()
 	switch p {
-	case PaymentThisWeek:
-		weekday := time.Now().Weekday()
-		if weekday > time.Weekday(day) {
-			return time.Date(year, month, 1, 0, 0, 0, 0, time.Local).Format("200601")
-		}
-		return time.Now().AddDate(0, 0, -int(weekday)).Format("20060102")
 	case PaymentThisMonth:
 		return time.Date(year, month, 1, 0, 0, 0, 0, time.Local).Format("200601")
 	case PaymentLastMonth:
@@ -87,7 +77,6 @@ func (p PaymentPeriod) Format() string {
 	case PaymentNextMonth:
 		return time.Date(year, month+1, 1, 0, 0, 0, 0, time.Local).Format("200601")
 	}
-
 	return time.Now().Format("20060102")
 }
 

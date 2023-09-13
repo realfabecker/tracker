@@ -14,4 +14,6 @@ export enum TransactionsActions {
   TRANSACTION_LIST_PENDING = "transactions/list/pending",
   TRANSACTION_LIST_REJECTED = "transactions/list/rejected",
   TRANSACTION_LIST_FULFILLED = "transactions/list/fulfilled",
+
+  TRANSACTION_FILTER_SET = "transactions/filter/set",
 }

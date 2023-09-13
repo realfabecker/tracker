@@ -1,5 +1,5 @@
 import { ActionStatus, Transaction } from "@core/domain/domain";
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { State } from "@store/store";
 import {
   getActionCreateTransaction,
@@ -11,6 +11,9 @@ import {
 const initialState = {
   "transactions/list": {
     status: ActionStatus.IDLE,
+    filters: {
+      period: "this_month",
+    },
     data: [],
   } as State<Transaction[]>,
   "transactions/add": {
@@ -29,7 +32,13 @@ export type TransactionsState = typeof initialState;
 export const transactionSlice = createSlice({
   name: "transactions",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    filters_set: (state, action: PayloadAction<{ period: string }>) => {
+      state["transactions/list"].filters = {
+        period: action.payload!.period as string,
+      };
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       getActionLoadTransactionsList.pending,
@@ -41,6 +50,7 @@ export const transactionSlice = createSlice({
       getActionLoadTransactionsList.fulfilled,
       (state: TransactionsState, action: any) => {
         state["transactions/list"] = {
+          ...state["transactions/list"],
           status: ActionStatus.DONE,
           data: action.payload.data.items,
         };

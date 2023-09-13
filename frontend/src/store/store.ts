@@ -9,6 +9,7 @@ export interface State<T = any> {
   data?: T;
   status: ActionStatus;
   error?: { message: string };
+  filters?: Record<string, any>;
 }
 
 export const store = configureStore({

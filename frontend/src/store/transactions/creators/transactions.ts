@@ -5,11 +5,22 @@ import {
   TransactionStatus,
 } from "@core/domain/domain";
 
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { Container } from "inversify";
 import { ITransactionService } from "@core/ports/ports";
 import { Types } from "@core/container/types";
 import { NavigateFunction } from "react-router";
+import { TransactionsActions } from "../actions/transactions";
+
+export const getActionSetPeriodFilter = createAction(
+  "transactions/filters_set",
+  (period) => {
+    return {
+      type: TransactionsActions.TRANSACTION_FILTER_SET,
+      payload: { period },
+    };
+  }
+);
 
 export const getActionDeleteTransaction = createAsyncThunk(
   "transactions/del",
@@ -37,14 +48,15 @@ export const getActionCreateTransaction = createAsyncThunk(
 
 export const getActionLoadTransactionsList = createAsyncThunk(
   "transactions/list",
-  async (_, { extra }) => {
+  async (period: string | undefined, { extra }) => {
     const container = (<any>extra).container as Container;
     const service = container.get<ITransactionService>(
       Types.TransactionsService
     );
+
     return service.fetchTransactions({
       limit: 50,
-      period: TransactionPeriod.THIS_MONTH,
+      period: period || TransactionPeriod.THIS_MONTH,
       status: TransactionStatus.ALL,
     });
   }

@@ -18,7 +18,6 @@ export enum TransactionStatus {
 }
 
 export enum TransactionPeriod {
-  THIS_WEEK = "this_week",
   THIS_MONTH = "this_month",
   LAST_MONTH = "last_month",
   NEXT_MONTH = "next_month",
