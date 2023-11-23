@@ -9,9 +9,6 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
-  "engines": {
-    "node": "^15"
-  },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
     "dayjs": "^1.11.9",
