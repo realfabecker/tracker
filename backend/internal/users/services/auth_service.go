@@ -45,9 +45,41 @@ func (u *CognitoAuthService) Login(email string, password string) (*usrdom.UserT
 	if err != nil {
 		return nil, err
 	}
+	if auth.ChallengeName == "NEW_PASSWORD_REQUIRED" {
+		return &usrdom.UserToken{
+			AuthSession:   auth.Session,
+			AuthChallenge: aws.String("NEW_PASSWORD_REQUIRED"),
+		}, nil
+	}
+	if auth.AuthenticationResult.AccessToken == nil {
+		return nil, errors.New("unexpected authorization error")
+	}
 	return &usrdom.UserToken{
-		AccesToken:   *auth.AuthenticationResult.AccessToken,
-		RefreshToken: *auth.AuthenticationResult.RefreshToken,
+		AccesToken:   auth.AuthenticationResult.AccessToken,
+		RefreshToken: auth.AuthenticationResult.RefreshToken,
+	}, nil
+}
+
+// Change
+func (u *CognitoAuthService) Change(email string, password string, session string) (*usrdom.UserToken, error) {
+	auth, err := u.cognitoClient.RespondToAuthChallenge(context.TODO(), &cognitoidentityprovider.RespondToAuthChallengeInput{
+		ChallengeName: "NEW_PASSWORD_REQUIRED",
+		ClientId:      &u.cognitoClientId,
+		Session:       &session,
+		ChallengeResponses: map[string]string{
+			"USERNAME":     email,
+			"NEW_PASSWORD": password,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	if auth.AuthenticationResult.AccessToken == nil {
+		return nil, errors.New("unexpected authorization error")
+	}
+	return &usrdom.UserToken{
+		AccesToken:   auth.AuthenticationResult.AccessToken,
+		RefreshToken: auth.AuthenticationResult.RefreshToken,
 	}, nil
 }
 

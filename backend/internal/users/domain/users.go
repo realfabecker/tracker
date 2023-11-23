@@ -12,8 +12,10 @@ type User struct {
 
 // UserToken
 type UserToken struct {
-	RefreshToken string `json:"RefreshToken"`
-	AccesToken   string `json:"AccessToken"`
+	RefreshToken  *string `json:"RefreshToken,omitempty"`
+	AccesToken    *string `json:"AccessToken,omitempty"`
+	AuthChallenge *string `json:"AuthChallange,omitempty"`
+	AuthSession   *string `json:"AuthSession,omitempty"`
 } // @name UserToken
 
 // WalletLoginDTOQ
@@ -21,3 +23,10 @@ type WalletLoginDTO struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=6"`
 } // @name WalletLoginDTO
+
+// WalletLoginChangeDTO
+type WalletLoginChangeDTO struct {
+	Email       string `json:"email" validate:"required,email"`
+	NewPassword string `json:"new_password" validate:"required,min=6"`
+	Session     string `json:"session" validate:"required"`
+} // @name WalletLoginChangeDTO

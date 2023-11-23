@@ -49,6 +49,13 @@ func (w *AuthController) Login(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
+	if token.AuthChallenge != nil {
+		return c.Status(401).JSON(cordom.ResponseDTO[usrdom.UserToken]{
+			Status: "error",
+			Data:   token,
+		})
+	}
+
 	return c.JSON(cordom.ResponseDTO[usrdom.UserToken]{
 		Status: "success",
 		Data:   token,
@@ -78,5 +85,37 @@ func (w *AuthController) GetUserByEmail(c *fiber.Ctx) error {
 	return c.JSON(cordom.ResponseDTO[usrdom.User]{
 		Status: "success",
 		Data:   out,
+	})
+}
+
+//  Change User Password
+//
+//	@Summary		Change user password
+//	@Description	Change user password
+//	@Tags			Auth
+//	@Produce		json
+//	@Success		200	{object}	cordom.ResponseDTO[usrdom.UserToken]
+//	@Failure		400
+//	@Failure		500
+//	@Router			/auth/change [get]
+func (w *AuthController) Change(c *fiber.Ctx) error {
+	q := usrdom.WalletLoginChangeDTO{}
+	if err := c.BodyParser(&q); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	v := validator.NewValidator()
+	if err := v.Struct(q); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	token, err := w.authSrv.Change(q.Email, q.NewPassword, q.Session)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(cordom.ResponseDTO[usrdom.UserToken]{
+		Status: "success",
+		Data:   token,
 	})
 }

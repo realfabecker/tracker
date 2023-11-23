@@ -9,12 +9,12 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.10.17
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.22.7
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.19.0
-	github.com/aws/smithy-go v1.13.5
 	github.com/awslabs/aws-lambda-go-api-proxy v0.14.0
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/gofiber/fiber/v2 v2.49.0
 	github.com/gofiber/swagger v0.1.9
 	github.com/golang-jwt/jwt/v5 v5.0.0-rc.1
+	github.com/lestrrat-go/jwx/v2 v2.0.12
 	github.com/oklog/ulid v1.3.1
 	github.com/swaggo/swag v1.8.10
 	go.uber.org/dig v1.17.0
@@ -37,6 +37,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.12.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.18.5 // indirect
+	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
@@ -54,7 +55,6 @@ require (
 	github.com/lestrrat-go/httpcc v1.0.1 // indirect
 	github.com/lestrrat-go/httprc v1.0.4 // indirect
 	github.com/lestrrat-go/iter v1.0.2 // indirect
-	github.com/lestrrat-go/jwx/v2 v2.0.12 // indirect
 	github.com/lestrrat-go/option v1.0.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -62,8 +62,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/savsgio/dictpool v0.0.0-20221023140959-7bf2e61cea94 // indirect
-	github.com/savsgio/gotils v0.0.0-20220530130905-52f3993e8d6d // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect

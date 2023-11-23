@@ -93,6 +93,7 @@ func (a *HttpHandler) Register() error {
 
 	auth := api.Group("/auth")
 	auth.Post("/login", a.usersController.Login)
+	auth.Post("/change", a.usersController.Change)
 
 	api.Use(a.authHandler)
 	wallet := api.Group("/wallet")

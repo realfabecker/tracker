@@ -9,6 +9,7 @@ import (
 // AuthService
 type AuthService interface {
 	Login(email string, password string) (*usrdom.UserToken, error)
+	Change(email string, password string, session string) (*usrdom.UserToken, error)
 	Verify(token string) (*jwt.RegisteredClaims, error)
 }
 

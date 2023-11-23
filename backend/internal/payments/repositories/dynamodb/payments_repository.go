@@ -105,7 +105,7 @@ func (u *WalletDynamoDbRepository) CreatePayment(p *paydom.Payment) (*paydom.Pay
 		return nil, err
 	}
 
-	p.Id = dueDateTime.Format("20060102") + validator.NewULID(dueDateTime)
+	p.Id = dueDateTime.Format("20060102") + validator.NewULID(time.Now())
 	p.CreatedAt = time.Now().Format("2006-01-02T15:04:05-07:00")
 
 	p.PK = "APP#" + u.app + "#USER#" + p.UserId
