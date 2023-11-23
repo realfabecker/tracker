@@ -15,6 +15,9 @@ export default function Login() {
 
   return (
     <main>
+      <header>
+        <h1>T$acker</h1>
+      </header>
       <form
         id="login"
         onSubmit={(e) => {

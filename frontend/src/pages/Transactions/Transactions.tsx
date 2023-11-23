@@ -47,7 +47,12 @@ function ItemList() {
   return (
     <div className="transactions">
       <div className="filters">
-        <select value={period} onChange={(e) => setPeriod(e.target.value)}>
+        <label htmlFor="filter-period">Selecione o periodo:</label>
+        <select
+          id="filter-period"
+          value={period}
+          onChange={(e) => setPeriod(e.target.value)}
+        >
           <option value={TransactionPeriod.THIS_MONTH}>This Month</option>
           <option value={TransactionPeriod.LAST_MONTH}>Last Month</option>
           <option value={TransactionPeriod.NEXT_MONTH}>Next Month</option>

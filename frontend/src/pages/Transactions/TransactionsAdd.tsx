@@ -8,21 +8,24 @@ import { useAppDispatch, useAppSelector } from "@store/store";
 import { getActionCreateTransaction } from "@store/transactions/creators/transactions";
 import { FormEvent, useCallback, useState } from "react";
 
+const initialState = {
+  name: "",
+  desc: "",
+  date: new Date().toISOString().slice(0, 10),
+};
+
 function TransactionsAdd() {
   const dispatch = useAppDispatch();
   const store = useAppSelector((d) => d.transactions["transactions/add"]);
 
-  const [name, setName] = useState("");
-  const [desc, setDesc] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-
+  const [d, setD] = useState(initialState);
   const handleFormSubmit = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
 
       const {
         groups: { type, value, title },
-      } = name.match(
+      } = d.name.match(
         /(?<type>\+|-)(?<value>\d+(,\d{2})?)\s{1}(?<title>.+)/
       ) as {
         groups: any;
@@ -31,14 +34,16 @@ function TransactionsAdd() {
       const transaction: Partial<Transaction> = {
         type: type === "+" ? TransactionType.INCOME : TransactionType.EXPENSE,
         title: title,
-        description: desc,
+        description: d.desc,
         value: Number(value.replace(",", ".")),
-        dueDate: new Date(date).toISOString(),
+        dueDate: new Date(d.date).toISOString(),
         status: TransactionStatus.PENDING,
       };
-      dispatch(getActionCreateTransaction(transaction));
+      dispatch(getActionCreateTransaction(transaction)).then(() => {
+        setD(initialState);
+      });
     },
-    [date, desc, name, dispatch]
+    [d, dispatch]
   );
 
   return (
@@ -48,17 +53,28 @@ function TransactionsAdd() {
           <input
             type="text"
             id="title"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="-200,25 Bethesda Skyrim"
+            value={d.name}
+            onChange={(e) =>
+              setD((prevState) => ({
+                ...prevState,
+                name: e.target.value,
+              }))
+            }
+            placeholder="-2,50 Cafezinho"
+            title="Ex.: -2,50 Cafezinho"
             pattern="^(\+|-)\d+(,\d{2})?\s{1}.+"
             required
           ></input>
           <input
             type="date"
             id="dueDate"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+            value={d.date}
+            onChange={(e) =>
+              setD((prevState) => ({
+                ...prevState,
+                date: e.target.value,
+              }))
+            }
             required
           />
         </div>
@@ -66,8 +82,13 @@ function TransactionsAdd() {
           <input
             type="text"
             id="description"
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
+            value={d.desc}
+            onChange={(e) =>
+              setD((prevState) => ({
+                ...prevState,
+                desc: e.target.value,
+              }))
+            }
             placeholder="descrição"
             required
           ></input>
