@@ -24,20 +24,17 @@ function TransactionsAdd() {
       e.preventDefault();
 
       const {
-        groups: { type, value, title },
-      } = d.name.match(
-        /(?<type>\+|-)(?<value>\d+(,\d{2})?)\s{1}(?<title>.+)/
-      ) as {
+        groups: { type, value },
+      } = d.name.match(/(?<type>[+-])?(?<value>\d+(,\d{2})?)$/) as {
         groups: any;
       };
 
       const transaction: Partial<Transaction> = {
         type: type === "+" ? TransactionType.INCOME : TransactionType.EXPENSE,
-        title: title,
-        description: d.desc,
+        title: d.desc,
         value: Number(value.replace(",", ".")),
         dueDate: new Date(d.date).toISOString(),
-        status: TransactionStatus.PENDING,
+        status: TransactionStatus.PAID,
       };
       dispatch(getActionCreateTransaction(transaction)).then(() => {
         setD(initialState);
@@ -60,9 +57,9 @@ function TransactionsAdd() {
                 name: e.target.value,
               }))
             }
-            placeholder="-2,50 Cafezinho"
-            title="Ex.: -2,50 Cafezinho"
-            pattern="^(\+|-)\d+(,\d{2})?\s{1}.+"
+            placeholder="R$ 2,50"
+            title="Ex.: 2,50"
+            pattern="^(\+|-)?\d+(,\d{2})?$"
             required
           ></input>
           <input
@@ -89,7 +86,7 @@ function TransactionsAdd() {
                 desc: e.target.value,
               }))
             }
-            placeholder="descrição"
+            placeholder="Título do lançamento"
             required
           ></input>
         </div>

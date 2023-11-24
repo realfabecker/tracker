@@ -82,7 +82,7 @@ function ItemList() {
             </div>
             <div>
               <div className="name">{t.title}</div>
-              <div className="description">{t.description}</div>
+              <div className="description">{t.status}</div>
             </div>
           </div>
           <div className="right">

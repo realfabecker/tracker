@@ -23,7 +23,7 @@ function TransactionsEdit() {
     (async () => {
       const transaction = await service.getTransaction(id as string);
 
-      setName(`${asBrl(transaction.data.value)} ${transaction.data.title}`);
+      setName(asBrl(transaction.data.value));
       setDesc(transaction.data.description);
       setDate(transaction.data.dueDate.slice(0, 10));
     })();
@@ -33,13 +33,12 @@ function TransactionsEdit() {
     (e: FormEvent) => {
       e.preventDefault();
       const {
-        groups: { value, title },
-      } = name.match(/R\$\s{1}(?<value>\d+(,\d{2})?)\s{1}(?<title>.+)/) as {
+        groups: { value },
+      } = name.match(/R\$\s(?<value>\d+(,\d{2})?)$/) as {
         groups: any;
       };
       const transaction: Partial<Transaction> = {
-        title: title,
-        description: desc,
+        title: desc,
         value: Number(value.replace(",", ".")),
       };
       const payload = { id: id as string, transaction, navigate };
@@ -58,7 +57,7 @@ function TransactionsEdit() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="200 Bethesda Skyrim"
-            pattern="^R\$\s{1}\d+(,\d{2})?\s{1}.+"
+            pattern="^R\$\s{1}\d+(,\d{2})?"
             required
           ></input>
           <input
