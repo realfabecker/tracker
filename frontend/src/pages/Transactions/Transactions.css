@@ -78,7 +78,7 @@ div.transactions.loading {
 div.transaction {
     display:flex;
     justify-content: space-between;
-    padding: .5rem 0;
+    padding: .5rem .5rem;
     border-top: 1px solid #888;
 }
 
@@ -97,12 +97,13 @@ div.transaction div.description {
 
 div.transaction div.left {
     text-align: left;
+    align-items: center;
     display: flex;
     gap: 1rem;
 }
 
 div.transaction div.left span.edit {
-    color: rgb(175, 182, 74);
+    color: rgb(164, 171, 57);
     cursor: pointer;
 }
 
@@ -111,8 +112,23 @@ div.transaction div.left span.trash {
     cursor: pointer;
 }
 
+div.transaction div.left button {
+    all: unset;
+    width: 32px;
+    height: 60px;
+    cursor: pointer;
+    font-size: 36px;
+    text-align: center;
+    vertical-align: middle;
+}
+
 div.transaction div.right {
     text-align: right;
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 div.transaction div.price.expense {
@@ -138,4 +154,45 @@ div.transactions div.filters select {
 
 div.transactions div.filters {
     margin-bottom: 1.5rem;
+}
+
+form#transaction div.actions {
+    margin-top: 12px;
+    display: flex;
+}
+
+form#transaction div.actions button#remove,
+form#transaction div.actions button#update {
+    all: unset;
+    cursor: pointer;
+}
+
+form#transaction div.actions {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    justify-content: flex-end;
+}
+
+form#transaction div.actions button {
+    all: unset;
+}
+
+form#transaction div.actions button#remove span {
+    display: inline-block;
+    color: #b95b5b;
+    font-size: 25px;
+    width: 22px;
+    height: 36px;
+    text-align: center;
+}
+
+
+form#transaction div.actions button#update span {
+    display: inline-block;
+    color: #567c56;
+    font-size: 24px;
+    width: 22px;
+    height: 36px;
+    text-align: center;
 }

@@ -5,7 +5,10 @@ import { Types } from "@core/container/types";
 import { ActionStatus, Transaction } from "@core/domain/domain";
 import { ITransactionService } from "@core/ports/ports";
 import { useAppDispatch, useAppSelector } from "@store/store";
-import { getActionUpdateTransaction } from "@store/transactions/creators/transactions";
+import {
+  getActionDeleteTransaction,
+  getActionUpdateTransaction,
+} from "@store/transactions/creators/transactions";
 import { asBrl } from "@core/lib/formatter";
 
 function TransactionsEdit() {
@@ -22,9 +25,8 @@ function TransactionsEdit() {
   useEffect(() => {
     (async () => {
       const transaction = await service.getTransaction(id as string);
-
       setName(asBrl(transaction.data.value));
-      setDesc(transaction.data.description);
+      setDesc(transaction.data.title);
       setDate(transaction.data.dueDate.slice(0, 10));
     })();
   }, [service, id]);
@@ -80,9 +82,28 @@ function TransactionsEdit() {
             required
           ></input>
         </div>
-        <button type="submit" disabled={store.status === ActionStatus.LOADING}>
-          {store.status === ActionStatus.LOADING ? "Loading..." : "Atualizar"}
-        </button>
+        <div className="actions">
+          <button
+            id="update"
+            type="submit"
+            title="Salvar"
+            disabled={store.status === ActionStatus.LOADING}
+          >
+            <span>&#128440;</span>
+          </button>
+          <button
+            id="remove"
+            title="Remover"
+            onClick={() =>
+              id &&
+              dispatch(getActionDeleteTransaction(id)).then(() =>
+                navigate("/transactions")
+              )
+            }
+          >
+            <span>{`\u267B`}</span>
+          </button>
+        </div>
         {store.error?.message && (
           <div className="error">{store.error.message}</div>
         )}

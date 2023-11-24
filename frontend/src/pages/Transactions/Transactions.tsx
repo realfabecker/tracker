@@ -6,10 +6,7 @@ import {
   TransactionPeriod,
   TransactionType,
 } from "@core/domain/domain";
-import {
-  getActionDeleteTransaction,
-  getActionLoadTransactionsList,
-} from "@store/transactions/creators/transactions";
+import { getActionLoadTransactionsList } from "@store/transactions/creators/transactions";
 import { useAppDispatch, useAppSelector } from "@store/store";
 import { getActionAuthLogout } from "@store/auth/creators/auth";
 
@@ -60,29 +57,22 @@ function ItemList() {
       </div>
 
       {transactions.data?.map((t) => (
-        <div className="transaction" key={t.id}>
+        <div className={"transaction"} key={t.id}>
           <div className="left">
             <div style={{ display: "flex", flexDirection: "column" }}>
               <button
                 id="edit"
-                style={{ all: "unset" }}
                 title="Edit"
-                onClick={() => navigate(`/transactions/${t.id}`)}
+                onClick={() => {
+                  navigate(`/transactions/${t.id}`);
+                }}
               >
-                <span className="edit">{`\u270E`}</span>
-              </button>
-              <button
-                id="remove"
-                title="Remove"
-                style={{ all: "unset" }}
-                onClick={() => dispatch(getActionDeleteTransaction(t.id))}
-              >
-                <span className="trash">{`\u267B`}</span>
+                <span className="edit">&#x270e;</span>
               </button>
             </div>
             <div>
               <div className="name">{t.title}</div>
-              <div className="description">{t.status}</div>
+              <div className="description">{t.status.toUpperCase()}</div>
             </div>
           </div>
           <div className="right">
