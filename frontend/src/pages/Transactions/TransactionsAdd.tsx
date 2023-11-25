@@ -32,6 +32,7 @@ function TransactionsAdd() {
       const transaction: Partial<Transaction> = {
         type: type === "+" ? TransactionType.INCOME : TransactionType.EXPENSE,
         title: d.desc,
+        description: d.desc,
         value: Number(value.replace(",", ".")),
         dueDate: new Date(d.date).toISOString(),
         status: TransactionStatus.PAID,
