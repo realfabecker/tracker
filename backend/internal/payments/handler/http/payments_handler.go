@@ -232,3 +232,139 @@ func (w *WalletController) PutUserPayment(c *fiber.Ctx) error {
 	}
 	return c.SendStatus(204)
 }
+
+// CreateTransactionDetail create transaction detail
+//
+//	@Summary		Create a transaction detail
+//	@Description	Create a new transaction detail record
+//	@Tags			Payments
+//	@Security		ApiKeyAuth
+//	@Produce		json
+//	@Param			request	body		paydom.TransactionDetail	true	"TransactionDetail payload"
+//	@Success		200		{object}	cordom.ResponseDTO[paydom.TransactionDetail]
+//	@Failure		400
+//	@Failure		500
+//	@Router			/wallet/payments/{id}/detail [post]
+func (w *WalletController) CreateTransactionDetail(c *fiber.Ctx) error {
+	user, ok := c.Locals("user").(*jwt.RegisteredClaims)
+	if !ok {
+		return fiber.NewError(fiber.ErrUnauthorized.Code)
+	}
+
+	p := paydom.Payment{}
+	if err := c.ParamsParser(&p); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	pv := validator.NewValidator()
+	if err := pv.StructPartial(p, "Id"); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	body := paydom.TransactionDetail{UserId: user.ID, TransactionId: p.Id}
+	if err := c.BodyParser(&body); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	bv := validator.NewValidator()
+	if err := bv.Struct(body); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	d, err := w.service.CreateTransactionDetail(user.Subject, &body)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(cordom.ResponseDTO[paydom.TransactionDetail]{
+		Status: "success",
+		Data:   d,
+	})
+}
+
+// ListTransasctionDetails list transaction details
+//
+//	@Summary		List transaction details
+//	@Description	List transaction details
+//	@Tags			Payments
+//	@Security		ApiKeyAuth
+//	@Produce		json
+//	@Param			limit		query		number	true	"Number of records"
+//	@Param			page_token	query		string	false	"Pagination token"
+//	@Success		200			{object}	cordom.ResponseDTO[cordom.PagedDTO[paydom.TransactionDetail]]
+//	@Failure		400
+//	@Failure		500
+//	@Router			/wallet/payments/{id}/details [get]
+func (w *WalletController) ListTransactionDetails(c *fiber.Ctx) error {
+	q := cordom.PagedDTOQuery{}
+	if err := c.QueryParser(&q); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	v := validator.NewValidator()
+	if err := v.Struct(q); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	p := paydom.Payment{}
+	if err := c.ParamsParser(&p); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	_, ok := c.Locals("user").(*jwt.RegisteredClaims)
+	if !ok {
+		return fiber.NewError(fiber.ErrUnauthorized.Code)
+	}
+
+	out, err := w.service.ListTransactionDetails(p.Id, q)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(cordom.ResponseDTO[cordom.PagedDTO[paydom.TransactionDetail]]{
+		Status: "success",
+		Data:   out,
+	})
+}
+
+// Get transaction detail by id
+//
+//	@Summary		Get transaction detail by id
+//	@Description	Get transaction detail by id
+//	@Tags			Payments
+//	@Security		ApiKeyAuth
+//	@Produce		json
+//	@Param			transactionId	path		string	true	"Transaction id"
+//	@Param			detailId	path		string	true	"Detail id"
+//	@Success		200	{object}	cordom.ResponseDTO[paydom.TransactionDetail]
+//	@Failure		400
+//	@Failure		404
+//	@Failure		500
+//	@Router			/wallet/payments/{transactionId}/details/{detailId} [get]
+func (w *WalletController) GetTransactionDetail(c *fiber.Ctx) error {
+	p := paydom.TransactionDetail{}
+	if err := c.ParamsParser(&p); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	v := validator.NewValidator()
+	if err := v.StructPartial(p, "detailId", "transactionId"); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	_, ok := c.Locals("user").(*jwt.RegisteredClaims)
+	if !ok {
+		return fiber.NewError(fiber.ErrUnauthorized.Code)
+	}
+
+	d, err := w.service.GetTransactionDetail(p.TransactionId, p.DetailId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	} else if d == nil && err == nil {
+		return fiber.NewError(fiber.StatusNotFound)
+	}
+
+	return c.JSON(cordom.ResponseDTO[paydom.TransactionDetail]{
+		Status: "success",
+		Data:   d,
+	})
+}

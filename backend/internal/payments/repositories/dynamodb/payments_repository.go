@@ -37,41 +37,21 @@ func (u *WalletDynamoDbRepository) ListPayments(user string, q paydom.PaymentPag
 	}
 
 	var out *dynamodb.QueryOutput
-
-	if q.Status != nil {
-		out, err = u.db.Query(context.TODO(), &dynamodb.QueryInput{
-			IndexName:              aws.String("GSI_1"),
-			KeyConditionExpression: aws.String("GSI1_PK = :v and begins_with(GSI1_SK, :x)"),
-			ExpressionAttributeValues: map[string]types.AttributeValue{
-				":v": &types.AttributeValueMemberS{
-					Value: "APP#" + u.app + "#MOVT_STATUS#" + (*q.Status).String(),
-				},
-				":x": &types.AttributeValueMemberS{
-					Value: "APP#" + u.app + "#MOVT_DUEDATE#" + q.GetDueDate(),
-				},
+	out, err = u.db.Query(context.TODO(), &dynamodb.QueryInput{
+		KeyConditionExpression: aws.String("PK = :v and begins_with(SK, :x)"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":v": &types.AttributeValueMemberS{
+				Value: "APP#" + u.app + "#USER#" + user,
 			},
-			ScanIndexForward:  aws.Bool(false),
-			TableName:         aws.String(u.table),
-			Limit:             &q.Limit,
-			ExclusiveStartKey: k,
-		})
-	} else {
-		out, err = u.db.Query(context.TODO(), &dynamodb.QueryInput{
-			KeyConditionExpression: aws.String("PK = :v and begins_with(SK, :x)"),
-			ExpressionAttributeValues: map[string]types.AttributeValue{
-				":v": &types.AttributeValueMemberS{
-					Value: "APP#" + u.app + "#USER#" + user,
-				},
-				":x": &types.AttributeValueMemberS{
-					Value: "APP#" + u.app + "#MOVT#" + q.GetDueDate(),
-				},
+			":x": &types.AttributeValueMemberS{
+				Value: "APP#" + u.app + "#MOVT#" + q.GetDueDate(),
 			},
-			ScanIndexForward:  aws.Bool(false),
-			TableName:         aws.String(u.table),
-			Limit:             &q.Limit,
-			ExclusiveStartKey: k,
-		})
-	}
+		},
+		ScanIndexForward:  aws.Bool(false),
+		TableName:         aws.String(u.table),
+		Limit:             &q.Limit,
+		ExclusiveStartKey: k,
+	})
 
 	if err != nil {
 		return nil, err
@@ -202,4 +182,103 @@ func (u *WalletDynamoDbRepository) PutPayment(p *paydom.Payment) (*paydom.Paymen
 	}
 
 	return p, nil
+}
+
+// CreateTransactionDetail
+func (u *WalletDynamoDbRepository) CreateTransactionDetail(i *paydom.TransactionDetail) (*paydom.TransactionDetail, error) {
+	i.DetailId = validator.NewULID(time.Now())
+	i.CreatedAt = time.Now().Format("2006-01-02T15:04:05-07:00")
+
+	i.PK = "APP#" + u.app + "#MOVT#" + i.TransactionId
+	i.SK = "APP#" + u.app + "#MOVT_DETAIL#" + i.DetailId
+
+	avs, err := attributevalue.MarshalMap(i)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := u.db.PutItem(context.TODO(), &dynamodb.PutItemInput{
+		TableName: aws.String(u.table),
+		Item:      avs,
+	}); err != nil {
+		return nil, err
+	}
+
+	return i, nil
+}
+
+//ListTransactionDetails
+func (u *WalletDynamoDbRepository) ListTransactionDetails(payment string, q cordom.PagedDTOQuery) (*cordom.PagedDTO[paydom.TransactionDetail], error) {
+	cipher := fmt.Sprintf("%s%d", payment, q.Limit)
+	k, err := dynamo.DecodePageToken(q.PageToken, cipher)
+	if err != nil {
+		return nil, err
+	}
+
+	var out *dynamodb.QueryOutput
+	out, err = u.db.Query(context.TODO(), &dynamodb.QueryInput{
+		KeyConditionExpression: aws.String("PK = :v and begins_with(SK, :x)"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":v": &types.AttributeValueMemberS{
+				Value: "APP#wallet#MOVT#" + payment,
+			},
+			":x": &types.AttributeValueMemberS{
+				Value: "APP#wallet#MOVT_DETAIL",
+			},
+		},
+		ScanIndexForward:  aws.Bool(false),
+		TableName:         aws.String(u.table),
+		Limit:             &q.Limit,
+		ExclusiveStartKey: k,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var lst []paydom.TransactionDetail
+	if err := attributevalue.UnmarshalListOfMaps(out.Items, &lst); err != nil {
+		return nil, err
+	}
+
+	dto := cordom.PagedDTO[paydom.TransactionDetail]{}
+	dto.PageCount = out.ScannedCount
+	dto.Items = lst
+	dto.HasMore = out.LastEvaluatedKey != nil
+
+	if out.LastEvaluatedKey != nil {
+		if dto.PageToken, err = dynamo.EncodePageToken(
+			out.LastEvaluatedKey,
+			cipher,
+		); err != nil {
+			return nil, err
+		}
+	}
+	return &dto, nil
+}
+
+//GetTrasactionDetail
+func (u *WalletDynamoDbRepository) GetTransactionDetail(transactionId string, detailId string) (*paydom.TransactionDetail, error) {
+	out, err := u.db.GetItem(context.TODO(), &dynamodb.GetItemInput{
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: "APP#wallet#MOVT#" + transactionId,
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "APP#wallet#MOVT_DETAIL#" + detailId,
+			},
+		},
+		TableName: aws.String(u.table),
+	})
+	if err != nil {
+		return nil, err
+	}
+	if out.Item == nil {
+		return nil, nil
+	}
+	var dto paydom.TransactionDetail
+	if err := attributevalue.UnmarshalMap(out.Item, &dto); err != nil {
+		return nil, err
+	}
+	return &dto, nil
 }

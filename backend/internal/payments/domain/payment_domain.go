@@ -22,8 +22,22 @@ type Payment struct {
 	DueDate     string        `dynamodbav:"DueDate" json:"dueDate" validate:"required,ISO8601" example:"2023-05-07"`
 	CreatedAt   string        `dynamodbav:"CreatedAt" json:"createdAt" example:"2023-04-07T16:45:30Z"`
 	Status      PaymentStatus `dynamodbav:"Status" json:"status" validate:"oneof=paid cancelled pending" example:"paid"`
-	Type        PaymentType   `dynamodbav:"Type" json:"type" validate:"oneof=expense income" example:"expense"`
-} // @name Payment
+	Type        PaymentType   `dynamodbav:"Type" json:"type" validate:"oneof=expense income invoice detail" example:"expense"`
+} //	@name	Payment
+
+//  TransactionDetail model info
+//	@Description	Invoice Detail information
+type TransactionDetail struct {
+	PK            string `dynamodbav:"PK" json:"-"`
+	SK            string `dynamodbav:"SK" json:"-"`
+	DetailId      string `dynamodbav:"DetailId" json:"id" example:"2023050701GXEH91YBVV40C1FK50S1P0KC"`
+	TransactionId string `dynamodbav:"TransactionId" json:"transactionId" validate:"required" example:"2023050701GXEH91YBVV40C1FK50S1P0XD"`
+	UserId        string `dynamodbav:"UserId" json:"userId" validate:"required" example:"realfabecker@gmail"`
+	Description   string `dynamodbav:"Description" json:"description" validate:"required" example:"Supermercado"`
+	Title         string `dynamodbav:"Title" json:"title" validate:"required" example:"Supermercado"`
+	Value         uint16 `dynamodbav:"Value" json:"value" validate:"required,min=1" example:"200"`
+	CreatedAt     string `dynamodbav:"CreatedAt" json:"createdAt" example:"2023-04-07T16:45:30Z"`
+} //	@name	TransactionDetail
 
 // PaymentPagedDTOQuery
 type PaymentPagedDTOQuery struct {
@@ -31,7 +45,7 @@ type PaymentPagedDTOQuery struct {
 	Status  *PaymentStatus `query:"status" validate:"omitempty,oneof=paid cancelled pending"`
 	DueDate *int32         `query:"due_date" validate:"omitempty"`
 	Period  *PaymentPeriod `query:"period" validate:"omitempty,oneof=this_week this_month last_month next_month" example:"this_month"`
-} // @name PaymentPagedDTOQuery
+} //	@name	PaymentPagedDTOQuery
 
 // GetDueDate
 func (p PaymentPagedDTOQuery) GetDueDate() string {
@@ -81,7 +95,7 @@ func (p PaymentPeriod) Format() string {
 }
 
 // PaymentStatus
-type PaymentStatus string // @name PaymentStatus
+type PaymentStatus string //	@name	PaymentStatus
 
 const (
 	PaymentPaid      PaymentStatus = "paid"
@@ -102,7 +116,7 @@ func (p PaymentStatus) String() string {
 }
 
 // PaymentType
-type PaymentType string // @name PaymentType
+type PaymentType string //	@name	PaymentType
 
 const (
 	PaymentTypeExpense PaymentType = "expense"

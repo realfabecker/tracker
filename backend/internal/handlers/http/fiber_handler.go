@@ -102,6 +102,9 @@ func (a *HttpHandler) Register() error {
 	wallet.Get("/payments/:id", a.walletController.GetPaymentById)
 	wallet.Delete("/payments/:id", a.walletController.DeletePayment)
 	wallet.Put("/payments/:id", a.walletController.PutUserPayment)
+	wallet.Post("/payments/:id/details", a.walletController.CreateTransactionDetail)
+	wallet.Get("/payments/:id/details", a.walletController.ListTransactionDetails)
+	wallet.Get("/payments/:transactionId/details/:detailId", a.walletController.GetTransactionDetail)
 	return nil
 }
 

@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	cordom "github.com/realfabecker/wallet/internal/core/domain"
 	paydom "github.com/realfabecker/wallet/internal/payments/domain"
 	paypts "github.com/realfabecker/wallet/internal/payments/ports"
@@ -32,4 +34,21 @@ func (s *WalletService) GetPaymentById(user string, payment string) (*paydom.Pay
 
 func (s *WalletService) DeletePayment(user string, payment string) error {
 	return s.WalletRepository.DeletePayment(user, payment)
+}
+
+func (s *WalletService) CreateTransactionDetail(user string, d *paydom.TransactionDetail) (*paydom.TransactionDetail, error) {
+	if p, err := s.GetPaymentById(user, d.TransactionId); err != nil {
+		return nil, err
+	} else if p == nil {
+		return nil, errors.New("transaction does not exists")
+	}
+	return s.WalletRepository.CreateTransactionDetail(d)
+}
+
+func (s *WalletService) ListTransactionDetails(payment string, q cordom.PagedDTOQuery) (*cordom.PagedDTO[paydom.TransactionDetail], error) {
+	return s.WalletRepository.ListTransactionDetails(payment, q)
+}
+
+func (s *WalletService) GetTransactionDetail(transactionId string, detailId string) (*paydom.TransactionDetail, error) {
+	return s.WalletRepository.GetTransactionDetail(transactionId, detailId)
 }

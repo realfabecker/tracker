@@ -14,7 +14,7 @@ type EmptyResponseDTO struct {
 	Status  string `json:"status" example:"success"`
 	Message string `json:"message,omitempty" example:"Operação realizada com sucesso"`
 	Code    int    `json:"code,omitempty" example:"200"`
-} // @name EmptyResponseDTO
+} //	@name	EmptyResponseDTO
 
 // ResponseDTO
 type ResponseDTO[T any] struct {
@@ -22,7 +22,7 @@ type ResponseDTO[T any] struct {
 	Message string `json:"message,omitempty" example:"Operação realizada com sucesso"`
 	Code    int    `json:"code,omitempty" example:"200"`
 	Data    *T     `json:"data,omitempty"`
-} // @name ResponseDTO
+} //	@name	ResponseDTO
 
 // PagedDTO
 type PagedDTO[T interface{}] struct {
@@ -30,10 +30,10 @@ type PagedDTO[T interface{}] struct {
 	Items     []T    `json:"items"`
 	PageToken string `json:"page_token,omitempty"`
 	HasMore   bool   `json:"has_more" example:"false"`
-} // @name PagedDTO
+} //	@name	PagedDTO
 
 // PagedDTOQuery
 type PagedDTOQuery struct {
 	Limit     int32  `query:"limit" validate:"required,max=50"`
 	PageToken string `query:"page_token"`
-} // @name PagedDTOQuery
+} //	@name	PagedDTOQuery

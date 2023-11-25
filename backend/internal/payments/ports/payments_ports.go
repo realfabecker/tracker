@@ -11,6 +11,9 @@ type WalletRepository interface {
 	PutPayment(p *paydom.Payment) (*paydom.Payment, error)
 	GetPaymentById(user string, payment string) (*paydom.Payment, error)
 	DeletePayment(user string, payment string) error
+	CreateTransactionDetail(p *paydom.TransactionDetail) (*paydom.TransactionDetail, error)
+	ListTransactionDetails(payments string, q cordom.PagedDTOQuery) (*cordom.PagedDTO[paydom.TransactionDetail], error)
+	GetTransactionDetail(transactionId string, detailId string) (*paydom.TransactionDetail, error)
 }
 
 type WalletService interface {
@@ -19,4 +22,7 @@ type WalletService interface {
 	PutPayment(p *paydom.Payment) (*paydom.Payment, error)
 	GetPaymentById(user string, payment string) (*paydom.Payment, error)
 	DeletePayment(user string, payment string) error
+	CreateTransactionDetail(user string, p *paydom.TransactionDetail) (*paydom.TransactionDetail, error)
+	ListTransactionDetails(payments string, q cordom.PagedDTOQuery) (*cordom.PagedDTO[paydom.TransactionDetail], error)
+	GetTransactionDetail(transactionId string, detailId string) (*paydom.TransactionDetail, error)
 }
