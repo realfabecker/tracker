@@ -41,6 +41,7 @@ function TransactionsEdit() {
       };
       const transaction: Partial<Transaction> = {
         title: desc,
+        description: desc,
         value: Number(value.replace(",", ".")),
       };
       const payload = { id: id as string, transaction, navigate };
