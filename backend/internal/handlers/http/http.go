@@ -35,17 +35,18 @@ type HttpHandler struct {
 
 //	@BasePath	/api/wallet
 
-//	@securityDefinitions.apikey	ApiKeyAuth
-//	@in							header
-//	@name						Authorization
-//	@description				Type 'Bearer ' and than your API token
+// @securityDefinitions.apikey	ApiKeyAuth
+// @in							header
+// @name						Authorization
+// @description				Type 'Bearer ' and than your API token
 func NewFiberHandler(
 	walletConfig *cordom.Config,
 	walletController *routes.WalletController,
 	usersController *routes.AuthController,
 	authService corpts.AuthService,
 ) corpts.HttpHandler {
-	// open api base project configuration
+
+	// open api base project configuration (2)
 	docs.SwaggerInfo.Host = walletConfig.AppHost
 	docs.SwaggerInfo.Schemes = []string{"http"}
 
