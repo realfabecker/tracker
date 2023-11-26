@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/realfabecker/wallet/internal/core/container"
+	"github.com/realfabecker/wallet/internal/adapters/container"
 
 	fiberadapter "github.com/awslabs/aws-lambda-go-api-proxy/fiber"
 	cordom "github.com/realfabecker/wallet/internal/core/domain"

@@ -14,26 +14,24 @@ import (
 
 	cordom "github.com/realfabecker/wallet/internal/core/domain"
 	corpts "github.com/realfabecker/wallet/internal/core/ports"
-	payhld "github.com/realfabecker/wallet/internal/payments/handler/http"
-	usrhld "github.com/realfabecker/wallet/internal/users/handler/http"
-	usrpts "github.com/realfabecker/wallet/internal/users/ports"
+	routes "github.com/realfabecker/wallet/internal/handlers/http/routes"
 )
 
 // HttpHandler
 type HttpHandler struct {
 	app              *fiber.App
 	walletConfig     *cordom.Config
-	walletController *payhld.WalletController
-	usersController  *usrhld.AuthController
-	authService      usrpts.AuthService
+	walletController *routes.WalletController
+	usersController  *routes.AuthController
+	authService      corpts.AuthService
 }
 
 // NewHttpHandler
 func NewFiberHandler(
 	walletConfig *cordom.Config,
-	walletController *payhld.WalletController,
-	usersController *usrhld.AuthController,
-	authService usrpts.AuthService,
+	walletController *routes.WalletController,
+	usersController *routes.AuthController,
+	authService corpts.AuthService,
 ) corpts.HttpHandler {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
@@ -97,14 +95,14 @@ func (a *HttpHandler) Register() error {
 
 	api.Use(a.authHandler)
 	wallet := api.Group("/wallet")
-	wallet.Post("/payments", a.walletController.CreateUserPayment)
-	wallet.Get("/payments", a.walletController.ListUserPayments)
-	wallet.Get("/payments/:id", a.walletController.GetPaymentById)
-	wallet.Delete("/payments/:id", a.walletController.DeletePayment)
-	wallet.Put("/payments/:id", a.walletController.PutUserPayment)
-	wallet.Post("/payments/:id/details", a.walletController.CreateTransactionDetail)
-	wallet.Get("/payments/:id/details", a.walletController.ListTransactionDetails)
-	wallet.Get("/payments/:transactionId/details/:detailId", a.walletController.GetTransactionDetail)
+	wallet.Post("/transactions", a.walletController.CreateUserPayment)
+	wallet.Get("/transactions", a.walletController.ListUserPayments)
+	wallet.Get("/transactions/:id", a.walletController.GetPaymentById)
+	wallet.Delete("/transactions/:id", a.walletController.DeletePayment)
+	wallet.Put("/transactions/:id", a.walletController.PutUserPayment)
+	wallet.Post("/transactions/:id/details", a.walletController.CreateTransactionDetail)
+	wallet.Get("/transactions/:id/details", a.walletController.ListTransactionDetails)
+	wallet.Get("/transactions/:transactionId/details/:detailId", a.walletController.GetTransactionDetail)
 	return nil
 }
 

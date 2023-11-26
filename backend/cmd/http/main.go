@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/realfabecker/wallet/internal/core/container"
+	"github.com/realfabecker/wallet/internal/adapters/container"
 	cordom "github.com/realfabecker/wallet/internal/core/domain"
 	corpts "github.com/realfabecker/wallet/internal/core/ports"
 )
