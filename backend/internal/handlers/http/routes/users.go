@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+
 	"github.com/realfabecker/wallet/internal/adapters/common/validator"
 	cordom "github.com/realfabecker/wallet/internal/core/domain"
 	corpts "github.com/realfabecker/wallet/internal/core/ports"
@@ -27,6 +28,7 @@ func NewAuthController(
 //	@Summary		Get user login by e-mail
 //	@Description	Get user login by e-mail
 //	@Tags			Auth
+//	@Param			request	body	cordom.WalletLoginDTO	true	"Login payload"
 //	@Produce		json
 //	@Success		200	{object}	cordom.ResponseDTO[cordom.UserToken]
 //	@Failure		400
@@ -87,16 +89,17 @@ func (w *AuthController) GetUserByEmail(c *fiber.Ctx) error {
 	})
 }
 
-//	 Change User Password
+// Change User Password
 //
-//		@Summary		Change user password
-//		@Description	Change user password
-//		@Tags			Auth
-//		@Produce		json
-//		@Success		200	{object}	cordom.ResponseDTO[cordom.UserToken]
-//		@Failure		400
-//		@Failure		500
-//		@Router			/auth/change [get]
+//	@Summary		Change user password
+//	@Description	Change user password
+//	@Tags			Auth
+//	@Param			request	body	cordom.WalletLoginChangeDTO	true	"Login payload"
+//	@Produce		json
+//	@Success		200	{object}	cordom.ResponseDTO[cordom.UserToken]
+//	@Failure		400
+//	@Failure		500
+//	@Router			/auth/change [get]
 func (w *AuthController) Change(c *fiber.Ctx) error {
 	q := cordom.WalletLoginChangeDTO{}
 	if err := c.BodyParser(&q); err != nil {

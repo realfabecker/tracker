@@ -25,11 +25,12 @@ func NewWalletController(
 	return &WalletController{walletRepository, walletService, auth}
 }
 
-// ListUserPayments get user payments list
+// ListUserTransactions get user transactions list
 //
-//	@Summary		List user payments
-//	@Description	List user payments
-//	@Tags			Payments
+//	@Summary		List user transactions
+//
+//	@Description	List user transactions
+//	@Tags			Transactions
 //	@Security		ApiKeyAuth
 //	@Produce		json
 //	@Param			limit		query		number	true	"Number of records"
@@ -38,8 +39,8 @@ func NewWalletController(
 //	@Success		200			{object}	cordom.ResponseDTO[cordom.PagedDTO[cordom.Payment]]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/wallet/payments [get]
-func (w *WalletController) ListUserPayments(c *fiber.Ctx) error {
+//	@Router			/transactions [get]
+func (w *WalletController) ListUserTransactions(c *fiber.Ctx) error {
 	q := cordom.PaymentPagedDTOQuery{}
 	if err := c.QueryParser(&q); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
@@ -66,18 +67,18 @@ func (w *WalletController) ListUserPayments(c *fiber.Ctx) error {
 	})
 }
 
-// ListUserPayments get user payments list
+// ListUserTransactions get user transactions list
 //
-//	@Summary		Get payment by id
-//	@Description	Get payment by id
-//	@Tags			Payments
+//	@Summary		Get transaction by id
+//	@Description	Get transaction by id
+//	@Tags			Transactions
 //	@Security		ApiKeyAuth
 //	@Produce		json
 //	@Param			id	path		string	true	"Payment id"
 //	@Success		200	{object}	cordom.ResponseDTO[cordom.Payment]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/wallet/payments/{id} [get]
+//	@Router			/transactions/{id} [get]
 func (w *WalletController) GetPaymentById(c *fiber.Ctx) error {
 	p := cordom.Payment{}
 	if err := c.ParamsParser(&p); err != nil {
@@ -109,16 +110,16 @@ func (w *WalletController) GetPaymentById(c *fiber.Ctx) error {
 
 // CreateUserPayment get user information filtered by E-mail
 //
-//	@Summary		Create a payment
-//	@Description	Create a new payment record
-//	@Tags			Payments
+//	@Summary		Create a transaction
+//	@Description	Create a new transaction record
+//	@Tags			Transactions
 //	@Security		ApiKeyAuth
 //	@Produce		json
 //	@Param			request	body		cordom.Payment	true	"Payment payload"
 //	@Success		200		{object}	cordom.ResponseDTO[cordom.Payment]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/wallet/payments [post]
+//	@Router			/transactions [post]
 func (w *WalletController) CreateUserPayment(c *fiber.Ctx) error {
 	user, ok := c.Locals("user").(*jwt.RegisteredClaims)
 	if !ok {
@@ -142,18 +143,18 @@ func (w *WalletController) CreateUserPayment(c *fiber.Ctx) error {
 	})
 }
 
-//	 DeletePaymentById
+//	DeletePaymentById
 //
-//		@Summary		Delete payment
-//		@Description	Delete payment
-//		@Tags			Payments
-//		@Security		ApiKeyAuth
-//		@Produce		json
-//		@Param			id	path		string	true	"Payment id"
-//		@Success		200	{object}	cordom.EmptyResponseDTO
-//		@Failure		400
-//		@Failure		500
-//		@Router			/wallet/payments/{id} [delete]
+// @Summary		Delete transaction
+// @Description	Delete transaction
+// @Tags			Transactions
+// @Security		ApiKeyAuth
+// @Produce		json
+// @Param			id	path		string	true	"Payment id"
+// @Success		200	{object}	cordom.EmptyResponseDTO
+// @Failure		400
+// @Failure		500
+// @Router			/transactions/{id} [delete]
 func (w *WalletController) DeletePayment(c *fiber.Ctx) error {
 	p := cordom.Payment{}
 	if err := c.ParamsParser(&p); err != nil {
@@ -170,10 +171,10 @@ func (w *WalletController) DeletePayment(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.ErrUnauthorized.Code)
 	}
 
-	payment, err := w.service.GetPaymentById(user.Subject, p.Id)
+	transaction, err := w.service.GetPaymentById(user.Subject, p.Id)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
-	} else if payment == nil {
+	} else if transaction == nil {
 		return fiber.NewError(fiber.StatusNotFound, "Not Found")
 	}
 
@@ -186,9 +187,9 @@ func (w *WalletController) DeletePayment(c *fiber.Ctx) error {
 
 // PutUserPayment
 //
-//	@Summary		Put a payment
-//	@Description	Update/Create a payment record
-//	@Tags			Payments
+//	@Summary		Put a transaction
+//	@Description	Update/Create a transaction record
+//	@Tags			Transactions
 //	@Security		ApiKeyAuth
 //	@Produce		json
 //	@Param			id		path		string			true	"Payment id"
@@ -196,7 +197,7 @@ func (w *WalletController) DeletePayment(c *fiber.Ctx) error {
 //	@Success		200		{object}	cordom.ResponseDTO[cordom.Payment]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/wallet/payments [put]
+//	@Router			/transactions [put]
 func (w *WalletController) PutUserPayment(c *fiber.Ctx) error {
 	user, ok := c.Locals("user").(*jwt.RegisteredClaims)
 	if !ok {
@@ -208,23 +209,23 @@ func (w *WalletController) PutUserPayment(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	payment, err := w.service.GetPaymentById(user.Subject, body.Id)
+	transaction, err := w.service.GetPaymentById(user.Subject, body.Id)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
-	} else if payment == nil {
+	} else if transaction == nil {
 		return fiber.NewError(fiber.StatusNotFound, "Not Found")
 	}
 
-	if err := c.BodyParser(&payment); err != nil {
+	if err := c.BodyParser(&transaction); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	v := validator.NewValidator()
-	if err := v.Struct(payment); err != nil {
+	if err := v.Struct(transaction); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	_, err = w.service.PutPayment(payment)
+	_, err = w.service.PutPayment(transaction)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
@@ -235,14 +236,14 @@ func (w *WalletController) PutUserPayment(c *fiber.Ctx) error {
 //
 //	@Summary		Create a transaction detail
 //	@Description	Create a new transaction detail record
-//	@Tags			Payments
+//	@Tags			Transactions
 //	@Security		ApiKeyAuth
 //	@Produce		json
 //	@Param			request	body		cordom.TransactionDetail	true	"TransactionDetail payload"
 //	@Success		200		{object}	cordom.ResponseDTO[cordom.TransactionDetail]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/wallet/payments/{id}/detail [post]
+//	@Router			/transactions/{id}/detail [post]
 func (w *WalletController) CreateTransactionDetail(c *fiber.Ctx) error {
 	user, ok := c.Locals("user").(*jwt.RegisteredClaims)
 	if !ok {
@@ -283,7 +284,7 @@ func (w *WalletController) CreateTransactionDetail(c *fiber.Ctx) error {
 //
 //	@Summary		List transaction details
 //	@Description	List transaction details
-//	@Tags			Payments
+//	@Tags			Transactions
 //	@Security		ApiKeyAuth
 //	@Produce		json
 //	@Param			limit		query		number	true	"Number of records"
@@ -291,7 +292,7 @@ func (w *WalletController) CreateTransactionDetail(c *fiber.Ctx) error {
 //	@Success		200			{object}	cordom.ResponseDTO[cordom.PagedDTO[cordom.TransactionDetail]]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/wallet/payments/{id}/details [get]
+//	@Router			/transactions/{id}/details [get]
 func (w *WalletController) ListTransactionDetails(c *fiber.Ctx) error {
 	q := cordom.PagedDTOQuery{}
 	if err := c.QueryParser(&q); err != nil {
@@ -328,16 +329,16 @@ func (w *WalletController) ListTransactionDetails(c *fiber.Ctx) error {
 //
 //	@Summary		Get transaction detail by id
 //	@Description	Get transaction detail by id
-//	@Tags			Payments
+//	@Tags			Transactions
 //	@Security		ApiKeyAuth
 //	@Produce		json
 //	@Param			transactionId	path		string	true	"Transaction id"
-//	@Param			detailId	path		string	true	"Detail id"
-//	@Success		200	{object}	cordom.ResponseDTO[cordom.TransactionDetail]
+//	@Param			detailId		path		string	true	"Detail id"
+//	@Success		200				{object}	cordom.ResponseDTO[cordom.TransactionDetail]
 //	@Failure		400
 //	@Failure		404
 //	@Failure		500
-//	@Router			/wallet/payments/{transactionId}/details/{detailId} [get]
+//	@Router			/transactions/{transactionId}/details/{detailId} [get]
 func (w *WalletController) GetTransactionDetail(c *fiber.Ctx) error {
 	p := cordom.TransactionDetail{}
 	if err := c.ParamsParser(&p); err != nil {

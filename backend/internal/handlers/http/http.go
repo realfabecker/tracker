@@ -10,11 +10,11 @@ import (
 	"github.com/gofiber/fiber/v2/utils"
 	"github.com/gofiber/swagger"
 
-	_ "github.com/realfabecker/wallet/internal/handlers/http/docs"
+	"github.com/realfabecker/wallet/internal/handlers/http/docs"
 
 	cordom "github.com/realfabecker/wallet/internal/core/domain"
 	corpts "github.com/realfabecker/wallet/internal/core/ports"
-	routes "github.com/realfabecker/wallet/internal/handlers/http/routes"
+	"github.com/realfabecker/wallet/internal/handlers/http/routes"
 )
 
 // HttpHandler
@@ -26,13 +26,29 @@ type HttpHandler struct {
 	authService      corpts.AuthService
 }
 
-// NewHttpHandler
+//	@title			Wallet Rest API
+//	@version		1.0
+//	@description	Wallet Rest API
+
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+
+//	@BasePath	/api/wallet
+
+//	@securityDefinitions.apikey	ApiKeyAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Type 'Bearer ' and than your API token
 func NewFiberHandler(
 	walletConfig *cordom.Config,
 	walletController *routes.WalletController,
 	usersController *routes.AuthController,
 	authService corpts.AuthService,
 ) corpts.HttpHandler {
+	// open api base project configuration
+	docs.SwaggerInfo.Host = walletConfig.AppHost
+	docs.SwaggerInfo.Schemes = []string{"http"}
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			code := fiber.StatusInternalServerError
@@ -96,7 +112,7 @@ func (a *HttpHandler) Register() error {
 	api.Use(a.authHandler)
 	wallet := api.Group("/wallet")
 	wallet.Post("/transactions", a.walletController.CreateUserPayment)
-	wallet.Get("/transactions", a.walletController.ListUserPayments)
+	wallet.Get("/transactions", a.walletController.ListUserTransactions)
 	wallet.Get("/transactions/:id", a.walletController.GetPaymentById)
 	wallet.Delete("/transactions/:id", a.walletController.DeletePayment)
 	wallet.Put("/transactions/:id", a.walletController.PutUserPayment)

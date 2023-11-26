@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-//	 Payment model info
-//		@Description	Payment information
+// Payment model info
+// @Description	Payment information
 type Payment struct {
 	PK          string        `dynamodbav:"PK" json:"-"`
 	SK          string        `dynamodbav:"SK" json:"-"`
@@ -23,8 +23,9 @@ type Payment struct {
 	Type        PaymentType   `dynamodbav:"Type" json:"type" validate:"oneof=expense income invoice detail" example:"expense"`
 } //	@name	Payment
 
-//	 TransactionDetail model info
-//		@Description	Invoice Detail information
+//	TransactionDetail model info
+//
+// @Description	Invoice Detail information
 type TransactionDetail struct {
 	PK            string `dynamodbav:"PK" json:"-"`
 	SK            string `dynamodbav:"SK" json:"-"`

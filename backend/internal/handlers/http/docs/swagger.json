@@ -1,19 +1,38 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Wallet Rest API",
+        "title": "Wallet Rest API",
+        "contact": {},
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
     },
+    "basePath": "/api/wallet",
     "paths": {
-        "/auth/login": {
+        "/auth/change": {
             "get": {
-                "description": "Get user login by e-mail",
+                "description": "Change user password",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Get user login by e-mail",
+                "summary": "Change user password",
+                "parameters": [
+                    {
+                        "description": "Login payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/WalletLoginChangeDTO"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -30,26 +49,32 @@
                 }
             }
         },
-        "/users/profile": {
+        "/auth/login": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get user information by e-mail",
+                "description": "Get user login by e-mail",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
-                "summary": "Get user by e-mail",
+                "summary": "Get user login by e-mail",
+                "parameters": [
+                    {
+                        "description": "Login payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/WalletLoginDTO"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ResponseDTO-User"
+                            "$ref": "#/definitions/ResponseDTO-UserToken"
                         }
                     },
                     "400": {
@@ -61,21 +86,21 @@
                 }
             }
         },
-        "/wallet/payments": {
+        "/transactions": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "List user payments",
+                "description": "List user transactions",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Payments"
+                    "Transactions"
                 ],
-                "summary": "List user payments",
+                "summary": "List user transactions",
                 "parameters": [
                     {
                         "type": "number",
@@ -119,14 +144,14 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Update/Create a payment record",
+                "description": "Update/Create a transaction record",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Payments"
+                    "Transactions"
                 ],
-                "summary": "Put a payment",
+                "summary": "Put a transaction",
                 "parameters": [
                     {
                         "type": "string",
@@ -166,14 +191,14 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Create a new payment record",
+                "description": "Create a new transaction record",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Payments"
+                    "Transactions"
                 ],
-                "summary": "Create a payment",
+                "summary": "Create a transaction",
                 "parameters": [
                     {
                         "description": "Payment payload",
@@ -201,21 +226,21 @@
                 }
             }
         },
-        "/wallet/payments/{id}": {
+        "/transactions/{id}": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Get payment by id",
+                "description": "Get transaction by id",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Payments"
+                    "Transactions"
                 ],
-                "summary": "Get payment by id",
+                "summary": "Get transaction by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -246,14 +271,14 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Delete payment",
+                "description": "Delete transaction",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Payments"
+                    "Transactions"
                 ],
-                "summary": "Delete payment",
+                "summary": "Delete transaction",
                 "parameters": [
                     {
                         "type": "string",
@@ -268,6 +293,175 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/EmptyResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/transactions/{id}/detail": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new transaction detail record",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Create a transaction detail",
+                "parameters": [
+                    {
+                        "description": "TransactionDetail payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/TransactionDetail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseDTO-TransactionDetail"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/transactions/{id}/details": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List transaction details",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "List transaction details",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Number of records",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Pagination token",
+                        "name": "page_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseDTO-PagedDTO-TransactionDetail"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/transactions/{transactionId}/details/{detailId}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get transaction detail by id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Get transaction detail by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Transaction id",
+                        "name": "transactionId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Detail id",
+                        "name": "detailId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseDTO-TransactionDetail"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/users/profile": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get user information by e-mail",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user by e-mail",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseDTO-User"
                         }
                     },
                     "400": {
@@ -320,6 +514,28 @@
                 }
             }
         },
+        "PagedDTO-TransactionDetail": {
+            "type": "object",
+            "properties": {
+                "has_more": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/TransactionDetail"
+                    }
+                },
+                "page_count": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "page_token": {
+                    "type": "string"
+                }
+            }
+        },
         "Payment": {
             "description": "Payment information",
             "type": "object",
@@ -327,6 +543,7 @@
                 "description",
                 "dueDate",
                 "id",
+                "title",
                 "userId",
                 "value"
             ],
@@ -360,6 +577,24 @@
                     ],
                     "example": "paid"
                 },
+                "title": {
+                    "type": "string",
+                    "example": "Supermercado"
+                },
+                "type": {
+                    "enum": [
+                        "expense",
+                        "income",
+                        "invoice",
+                        "detail"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PaymentType"
+                        }
+                    ],
+                    "example": "expense"
+                },
                 "userId": {
                     "type": "string",
                     "example": "realfabecker@gmail"
@@ -384,6 +619,17 @@
                 "PaymentCancelled"
             ]
         },
+        "PaymentType": {
+            "type": "string",
+            "enum": [
+                "expense",
+                "income"
+            ],
+            "x-enum-varnames": [
+                "PaymentTypeExpense",
+                "PaymentTypeIncome"
+            ]
+        },
         "ResponseDTO-PagedDTO-Payment": {
             "type": "object",
             "properties": {
@@ -404,6 +650,26 @@
                 }
             }
         },
+        "ResponseDTO-PagedDTO-TransactionDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/PagedDTO-TransactionDetail"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Operação realizada com sucesso"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
         "ResponseDTO-Payment": {
             "type": "object",
             "properties": {
@@ -413,6 +679,26 @@
                 },
                 "data": {
                     "$ref": "#/definitions/Payment"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Operação realizada com sucesso"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "ResponseDTO-TransactionDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/TransactionDetail"
                 },
                 "message": {
                     "type": "string",
@@ -464,6 +750,48 @@
                 }
             }
         },
+        "TransactionDetail": {
+            "description": "Invoice Detail information",
+            "type": "object",
+            "required": [
+                "description",
+                "title",
+                "transactionId",
+                "userId",
+                "value"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-07T16:45:30Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Supermercado"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "2023050701GXEH91YBVV40C1FK50S1P0KC"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Supermercado"
+                },
+                "transactionId": {
+                    "type": "string",
+                    "example": "2023050701GXEH91YBVV40C1FK50S1P0XD"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "realfabecker@gmail"
+                },
+                "value": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 200
+                }
+            }
+        },
         "User": {
             "description": "User information",
             "type": "object",
@@ -484,10 +812,60 @@
                 "AccessToken": {
                     "type": "string"
                 },
+                "AuthChallange": {
+                    "type": "string"
+                },
+                "AuthSession": {
+                    "type": "string"
+                },
                 "RefreshToken": {
                     "type": "string"
                 }
             }
+        },
+        "WalletLoginChangeDTO": {
+            "type": "object",
+            "required": [
+                "email",
+                "new_password",
+                "session"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "new_password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "session": {
+                    "type": "string"
+                }
+            }
+        },
+        "WalletLoginDTO": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "description": "Type 'Bearer ' and than your API token",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

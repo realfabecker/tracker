@@ -1,7 +1,7 @@
 package domain
 
 //	 User model infor
-//		@Description	User information
+//	@Description	User information
 type User struct {
 	PK   string `dynamodbav:"PK" json:"-"`
 	SK   string `dynamodbav:"SK" json:"-"`
