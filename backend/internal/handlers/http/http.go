@@ -103,23 +103,22 @@ func (a *HttpHandler) Register() error {
 	}))
 
 	a.app.Get("/docs/*", swagger.HandlerDefault)
+	wallet := a.app.Group("/wallet")
 
-	api := a.app.Group("/api")
-
-	auth := api.Group("/auth")
+	auth := wallet.Group("/auth")
 	auth.Post("/login", a.usersController.Login)
 	auth.Post("/change", a.usersController.Change)
 
-	api.Use(a.authHandler)
-	wallet := api.Group("/wallet")
-	wallet.Post("/transactions", a.walletController.CreateUserPayment)
-	wallet.Get("/transactions", a.walletController.ListUserTransactions)
-	wallet.Get("/transactions/:id", a.walletController.GetPaymentById)
-	wallet.Delete("/transactions/:id", a.walletController.DeletePayment)
-	wallet.Put("/transactions/:id", a.walletController.PutUserPayment)
-	wallet.Post("/transactions/:id/details", a.walletController.CreateTransactionDetail)
-	wallet.Get("/transactions/:id/details", a.walletController.ListTransactionDetails)
-	wallet.Get("/transactions/:transactionId/details/:detailId", a.walletController.GetTransactionDetail)
+	tran := wallet.Group("/transactions")
+	tran.Use(a.authHandler)
+	tran.Post("/", a.walletController.CreateUserPayment)
+	tran.Get("/", a.walletController.ListUserTransactions)
+	tran.Get("/:paymentId", a.walletController.GetPaymentById)
+	tran.Delete("/:paymentId", a.walletController.DeletePayment)
+	tran.Put("/:paymentId", a.walletController.PutUserPayment)
+	tran.Post("/:paymentId/details", a.walletController.CreateTransactionDetail)
+	tran.Get("/:paymentId/details", a.walletController.ListTransactionDetails)
+	tran.Get("/:transactionId/details/:detailId", a.walletController.GetTransactionDetail)
 	return nil
 }
 

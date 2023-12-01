@@ -83,17 +83,17 @@ func (u *WalletDynamoDbRepository) CreatePayment(p *cordom.Payment) (*cordom.Pay
 	if err != nil {
 		return nil, err
 	}
+	pd := payment{Payment: p}
+	pd.PaymentId = dueDateTime.Format("20060102") + validator.NewULID(time.Now())
+	pd.CreatedAt = time.Now().Format("2006-01-02T15:04:05-07:00")
 
-	p.Id = dueDateTime.Format("20060102") + validator.NewULID(time.Now())
-	p.CreatedAt = time.Now().Format("2006-01-02T15:04:05-07:00")
+	pd.PK = "APP#" + u.app + "#USER#" + p.UserId
+	pd.SK = "APP#" + u.app + "#MOVT#" + p.PaymentId
 
-	p.PK = "APP#" + u.app + "#USER#" + p.UserId
-	p.SK = "APP#" + u.app + "#MOVT#" + p.Id
+	pd.GSI1PK = "APP#" + u.app + "#MOVT_STATUS#" + p.Status.String()
+	pd.GSI1SK = "APP#" + u.app + "#MOVT_DUEDATE#" + dueDateTime.Format("20060102")
 
-	p.GSI1PK = "APP#" + u.app + "#MOVT_STATUS#" + p.Status.String()
-	p.GSI1SK = "APP#" + u.app + "#MOVT_DUEDATE#" + dueDateTime.Format("20060102")
-
-	avs, err := attributevalue.MarshalMap(p)
+	avs, err := attributevalue.MarshalMap(pd)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (u *WalletDynamoDbRepository) CreatePayment(p *cordom.Payment) (*cordom.Pay
 		return nil, err
 	}
 
-	return p, nil
+	return pd.Payment, nil
 }
 
 // GetPaymentById
@@ -153,7 +153,7 @@ func (u *WalletDynamoDbRepository) DeletePayment(user string, payment string) er
 
 // PutPayment
 func (u *WalletDynamoDbRepository) PutPayment(p *cordom.Payment) (*cordom.Payment, error) {
-	r, err := u.GetPaymentById(p.UserId, p.Id)
+	r, err := u.GetPaymentById(p.UserId, p.PaymentId)
 	if err != nil {
 		return nil, err
 	}
@@ -162,13 +162,18 @@ func (u *WalletDynamoDbRepository) PutPayment(p *cordom.Payment) (*cordom.Paymen
 		return u.CreatePayment(p)
 	}
 
-	p.PK = "APP#" + u.app + "#USER#" + p.UserId
-	p.SK = "APP#" + u.app + "#MOVT#" + p.Id
+	dueDateTime, err := validator.DateParse(p.DueDate)
+	if err != nil {
+		return nil, err
+	}
 
-	p.GSI1PK = "APP#" + u.app + "#MOVT_STATUS#" + p.Status.String()
-	p.GSI1SK = r.GSI1SK
+	pd := payment{Payment: p}
+	pd.PK = "APP#" + u.app + "#USER#" + p.UserId
+	pd.SK = "APP#" + u.app + "#MOVT#" + p.PaymentId
 
-	avs, err := attributevalue.MarshalMap(p)
+	pd.GSI1PK = "APP#" + u.app + "#MOVT_STATUS#" + p.Status.String()
+	pd.GSI1SK = "APP#" + u.app + "#MOVT_DUEDATE#" + dueDateTime.Format("20060102")
+	avs, err := attributevalue.MarshalMap(pd)
 	if err != nil {
 		return nil, err
 	}
@@ -185,13 +190,14 @@ func (u *WalletDynamoDbRepository) PutPayment(p *cordom.Payment) (*cordom.Paymen
 
 // CreateTransactionDetail
 func (u *WalletDynamoDbRepository) CreateTransactionDetail(i *cordom.TransactionDetail) (*cordom.TransactionDetail, error) {
-	i.DetailId = validator.NewULID(time.Now())
-	i.CreatedAt = time.Now().Format("2006-01-02T15:04:05-07:00")
+	td := transactionDetail{TransactionDetail: i}
+	td.DetailId = validator.NewULID(time.Now())
+	td.CreatedAt = time.Now().Format("2006-01-02T15:04:05-07:00")
 
-	i.PK = "APP#" + u.app + "#MOVT#" + i.TransactionId
-	i.SK = "APP#" + u.app + "#MOVT_DETAIL#" + i.DetailId
+	td.PK = "APP#" + u.app + "#MOVT#" + i.TransactionId
+	td.SK = "APP#" + u.app + "#MOVT_DETAIL#" + i.DetailId
 
-	avs, err := attributevalue.MarshalMap(i)
+	avs, err := attributevalue.MarshalMap(td)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +209,7 @@ func (u *WalletDynamoDbRepository) CreateTransactionDetail(i *cordom.Transaction
 		return nil, err
 	}
 
-	return i, nil
+	return td.TransactionDetail, nil
 }
 
 // ListTransactionDetails

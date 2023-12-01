@@ -5,7 +5,7 @@ module "database_dynamodb" {
 module "backend_lambda" {
   source = "./modules/lambda"
 
-  function_name = "carteira-http-api"
+  function_name = "wallet"
   entrypoint    = "bootstrap"
 
   zip_source_file = "../backend/out/bootstrap"

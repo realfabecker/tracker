@@ -8,34 +8,28 @@ import (
 // Payment model info
 // @Description	Payment information
 type Payment struct {
-	PK          string        `dynamodbav:"PK" json:"-"`
-	SK          string        `dynamodbav:"SK" json:"-"`
-	GSI1PK      string        `dynamodbav:"GSI1_PK" json:"-"`
-	GSI1SK      string        `dynamodbav:"GSI1_SK" json:"-"`
-	Id          string        `dynamodbav:"PaymentId" json:"id" validate:"required" example:"2023050701GXEH91YBVV40C1FK50S1P0KC"`
-	UserId      string        `dynamodbav:"UserId" json:"userId" validate:"required" example:"realfabecker@gmail"`
-	Description string        `dynamodbav:"Description" json:"description" validate:"required" example:"Supermercado"`
-	Title       string        `dynamodbav:"Title" json:"title" validate:"required" example:"Supermercado"`
-	Value       float64       `dynamodbav:"Value" json:"value" validate:"required,min=1" example:"200"`
-	DueDate     string        `dynamodbav:"DueDate" json:"dueDate" validate:"required,ISO8601" example:"2023-05-07"`
-	CreatedAt   string        `dynamodbav:"CreatedAt" json:"createdAt" example:"2023-04-07T16:45:30Z"`
-	Status      PaymentStatus `dynamodbav:"Status" json:"status" validate:"oneof=paid cancelled pending" example:"paid"`
-	Type        PaymentType   `dynamodbav:"Type" json:"type" validate:"oneof=expense income invoice detail" example:"expense"`
+	PaymentId   string        `json:"paymentId" validate:"required" example:"2023050701GXEH91YBVV40C1FK50S1P0KC"`
+	UserId      string        `json:"userId" validate:"required" example:"realfabecker@gmail"`
+	Description string        `json:"description" validate:"required" example:"Supermercado"`
+	Title       string        `json:"title" validate:"required" example:"Supermercado"`
+	Value       float64       `json:"value" validate:"required,min=1" example:"200"`
+	DueDate     string        `json:"dueDate" validate:"required,ISO8601" example:"2023-05-07"`
+	CreatedAt   string        `json:"createdAt" example:"2023-04-07T16:45:30Z"`
+	Status      PaymentStatus `json:"status" validate:"oneof=paid cancelled pending" example:"paid"`
+	Type        PaymentType   `json:"type" validate:"oneof=expense income invoice detail" example:"expense"`
 } //	@name	Payment
 
 //	TransactionDetail model info
 //
 // @Description	Invoice Detail information
 type TransactionDetail struct {
-	PK            string `dynamodbav:"PK" json:"-"`
-	SK            string `dynamodbav:"SK" json:"-"`
-	DetailId      string `dynamodbav:"DetailId" json:"id" example:"2023050701GXEH91YBVV40C1FK50S1P0KC"`
-	TransactionId string `dynamodbav:"TransactionId" json:"transactionId" validate:"required" example:"2023050701GXEH91YBVV40C1FK50S1P0XD"`
-	UserId        string `dynamodbav:"UserId" json:"userId" validate:"required" example:"realfabecker@gmail"`
-	Description   string `dynamodbav:"Description" json:"description" validate:"required" example:"Supermercado"`
-	Title         string `dynamodbav:"Title" json:"title" validate:"required" example:"Supermercado"`
-	Value         uint16 `dynamodbav:"Value" json:"value" validate:"required,min=1" example:"200"`
-	CreatedAt     string `dynamodbav:"CreatedAt" json:"createdAt" example:"2023-04-07T16:45:30Z"`
+	DetailId      string `json:"detailId" example:"2023050701GXEH91YBVV40C1FK50S1P0KC"`
+	TransactionId string `json:"transactionId" validate:"required" example:"2023050701GXEH91YBVV40C1FK50S1P0XD"`
+	UserId        string `json:"userId" validate:"required" example:"realfabecker@gmail"`
+	Description   string `json:"description" validate:"required" example:"Supermercado"`
+	Title         string `json:"title" validate:"required" example:"Supermercado"`
+	Value         uint16 `json:"value" validate:"required,min=1" example:"200"`
+	CreatedAt     string `json:"createdAt" example:"2023-04-07T16:45:30Z"`
 } //	@name	TransactionDetail
 
 // PaymentPagedDTOQuery

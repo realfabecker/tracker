@@ -78,7 +78,7 @@ func (w *WalletController) ListUserTransactions(c *fiber.Ctx) error {
 //	@Success		200	{object}	cordom.ResponseDTO[cordom.Payment]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions/{id} [get]
+//	@Router			/transactions/{paymentId} [get]
 func (w *WalletController) GetPaymentById(c *fiber.Ctx) error {
 	p := cordom.Payment{}
 	if err := c.ParamsParser(&p); err != nil {
@@ -95,7 +95,7 @@ func (w *WalletController) GetPaymentById(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.ErrUnauthorized.Code)
 	}
 
-	d, err := w.service.GetPaymentById(user.Subject, p.Id)
+	d, err := w.service.GetPaymentById(user.Subject, p.PaymentId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	} else if d == nil && err == nil {
@@ -130,7 +130,7 @@ func (w *WalletController) CreateUserPayment(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 	v := validator.NewValidator()
-	if err := v.StructExcept(body, "Id"); err != nil {
+	if err := v.StructExcept(body, "PaymentId"); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Not Found")
 	}
 	p, err := w.service.CreatePayment(&body)
@@ -154,7 +154,7 @@ func (w *WalletController) CreateUserPayment(c *fiber.Ctx) error {
 // @Success		200	{object}	cordom.EmptyResponseDTO
 // @Failure		400
 // @Failure		500
-// @Router			/transactions/{id} [delete]
+// @Router			/transactions/{paymentId} [delete]
 func (w *WalletController) DeletePayment(c *fiber.Ctx) error {
 	p := cordom.Payment{}
 	if err := c.ParamsParser(&p); err != nil {
@@ -171,14 +171,14 @@ func (w *WalletController) DeletePayment(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.ErrUnauthorized.Code)
 	}
 
-	transaction, err := w.service.GetPaymentById(user.Subject, p.Id)
+	transaction, err := w.service.GetPaymentById(user.Subject, p.PaymentId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	} else if transaction == nil {
 		return fiber.NewError(fiber.StatusNotFound, "Not Found")
 	}
 
-	if err := w.service.DeletePayment(user.Subject, p.Id); err != nil {
+	if err := w.service.DeletePayment(user.Subject, p.PaymentId); err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -209,7 +209,7 @@ func (w *WalletController) PutUserPayment(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	transaction, err := w.service.GetPaymentById(user.Subject, body.Id)
+	transaction, err := w.service.GetPaymentById(user.Subject, body.PaymentId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	} else if transaction == nil {
@@ -243,7 +243,7 @@ func (w *WalletController) PutUserPayment(c *fiber.Ctx) error {
 //	@Success		200		{object}	cordom.ResponseDTO[cordom.TransactionDetail]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions/{id}/detail [post]
+//	@Router			/transactions/{paymentId}/detail [post]
 func (w *WalletController) CreateTransactionDetail(c *fiber.Ctx) error {
 	user, ok := c.Locals("user").(*jwt.RegisteredClaims)
 	if !ok {
@@ -260,7 +260,7 @@ func (w *WalletController) CreateTransactionDetail(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	body := cordom.TransactionDetail{UserId: user.ID, TransactionId: p.Id}
+	body := cordom.TransactionDetail{UserId: user.ID, TransactionId: p.PaymentId}
 	if err := c.BodyParser(&body); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -292,7 +292,7 @@ func (w *WalletController) CreateTransactionDetail(c *fiber.Ctx) error {
 //	@Success		200			{object}	cordom.ResponseDTO[cordom.PagedDTO[cordom.TransactionDetail]]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions/{id}/details [get]
+//	@Router			/transactions/{paymentId}/details [get]
 func (w *WalletController) ListTransactionDetails(c *fiber.Ctx) error {
 	q := cordom.PagedDTOQuery{}
 	if err := c.QueryParser(&q); err != nil {
@@ -314,7 +314,7 @@ func (w *WalletController) ListTransactionDetails(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.ErrUnauthorized.Code)
 	}
 
-	out, err := w.service.ListTransactionDetails(p.Id, q)
+	out, err := w.service.ListTransactionDetails(p.PaymentId, q)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
