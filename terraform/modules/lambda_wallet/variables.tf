@@ -37,3 +37,8 @@ variable "zip_output_path" {
 variable "dynamodb_table_arn" {
   type = string
 }
+
+variable "function_url" {
+  type    = bool
+  default = false
+}

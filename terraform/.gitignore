@@ -36,6 +36,7 @@ terraform.rc
 
 # Ignore Jetbrains IDE config
 .idea
+*.iml
 
 # Environment files
 .env

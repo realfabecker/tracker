@@ -22,7 +22,8 @@ resource "aws_lambda_function" "lambda" {
   }
 }
 
-# resource "aws_lambda_function_url" "lambda_url" {
-#   function_name      = aws_lambda_function.lambda.function_name
-#   authorization_type = "NONE"
-# }
+resource "aws_lambda_function_url" "lambda_url" {
+  count              = var.function_url ? 1 : 0
+  function_name      = aws_lambda_function.lambda.function_name
+  authorization_type = "NONE"
+}
