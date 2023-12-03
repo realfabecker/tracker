@@ -2,20 +2,17 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/realfabecker/wallet/internal/adapters/common/validator"
 	cordom "github.com/realfabecker/wallet/internal/core/domain"
 	corpts "github.com/realfabecker/wallet/internal/core/ports"
 )
 
-// WalltetController definição de controlador http wallet
 type AuthController struct {
 	authSrv corpts.AuthService
 	userSrv corpts.UserService
 }
 
-// NewWalletController construção de controlador http wallet
 func NewAuthController(
 	authSrv corpts.AuthService,
 	userSrv corpts.UserService,
@@ -23,19 +20,19 @@ func NewAuthController(
 	return &AuthController{authSrv, userSrv}
 }
 
-// UserLogin get user login by e-mal
+// Login user login
 //
-//	@Summary		Get user login by e-mail
-//	@Description	Get user login by e-mail
+//	@Summary		User login
+//	@Description	User login
 //	@Tags			Auth
-//	@Param			request	body	cordom.WalletLoginDTO	true	"Login payload"
+//	@Param			request	body	cordom.UserLoginDTO	true	"Login payload"
 //	@Produce		json
 //	@Success		200	{object}	cordom.ResponseDTO[cordom.UserToken]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/auth/login [get]
+//	@Router			/auth/login [post]
 func (w *AuthController) Login(c *fiber.Ctx) error {
-	q := cordom.WalletLoginDTO{}
+	q := cordom.UserLoginDTO{}
 	if err := c.BodyParser(&q); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -63,45 +60,19 @@ func (w *AuthController) Login(c *fiber.Ctx) error {
 	})
 }
 
-// GetUserByEmail get user information filtered by E-mail
+// Change Password
 //
-//	@Summary		Get user by e-mail
-//	@Description	Get user information by e-mail
-//	@Tags			Users
-//	@Security		ApiKeyAuth
-//	@Produce		json
-//	@Success		200	{object}	cordom.ResponseDTO[cordom.User]
-//	@Failure		400
-//	@Failure		500
-//	@Router			/users/profile [get]
-func (w *AuthController) GetUserByEmail(c *fiber.Ctx) error {
-	user, ok := c.Locals("user").(*jwt.RegisteredClaims)
-	if !ok {
-		return fiber.NewError(fiber.ErrUnauthorized.Code)
-	}
-	out, err := w.userSrv.GetUserByEmail(user.Subject)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
-	}
-	return c.JSON(cordom.ResponseDTO[cordom.User]{
-		Status: "success",
-		Data:   out,
-	})
-}
-
-// Change User Password
-//
-//	@Summary		Change user password
-//	@Description	Change user password
+//	@Summary		Change password
+//	@Description	Change password
 //	@Tags			Auth
-//	@Param			request	body	cordom.WalletLoginChangeDTO	true	"Login payload"
+//	@Param			request	body	cordom.UserLoginChangeDTO	true	"Login payload"
 //	@Produce		json
 //	@Success		200	{object}	cordom.ResponseDTO[cordom.UserToken]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/auth/change [get]
+//	@Router			/auth/change [post]
 func (w *AuthController) Change(c *fiber.Ctx) error {
-	q := cordom.WalletLoginChangeDTO{}
+	q := cordom.UserLoginChangeDTO{}
 	if err := c.BodyParser(&q); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}

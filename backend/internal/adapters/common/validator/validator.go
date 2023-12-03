@@ -19,7 +19,7 @@ func NewValidator() *validator.Validate {
 
 // ISO8601
 func iso8601(fl validator.FieldLevel) bool {
-	regString := `^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(\.\d{0,3})?(Z|[+-](\d{2}):(\d{2}))$`
+	regString := `^(\d{4})-(\d{2})-(\d{2})(T(\d{2}):(\d{2}):(\d{2})(\.\d{0,3})?(Z|[+-](\d{2}):(\d{2})))?$`
 	reg := regexp.MustCompile(regString)
 	return reg.MatchString(fl.Field().String())
 }

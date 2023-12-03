@@ -12,14 +12,14 @@ definitions:
         example: success
         type: string
     type: object
-  PagedDTO-Payment:
+  PagedDTO-Transaction:
     properties:
       has_more:
         example: false
         type: boolean
       items:
         items:
-          $ref: '#/definitions/Payment'
+          $ref: '#/definitions/Transaction'
         type: array
       page_count:
         example: 10
@@ -42,81 +42,13 @@ definitions:
       page_token:
         type: string
     type: object
-  Payment:
-    description: Payment information
-    properties:
-      createdAt:
-        example: "2023-04-07T16:45:30Z"
-        type: string
-      description:
-        example: Supermercado
-        type: string
-      dueDate:
-        example: "2023-05-07"
-        type: string
-      id:
-        example: 2023050701GXEH91YBVV40C1FK50S1P0KC
-        type: string
-      status:
-        allOf:
-        - $ref: '#/definitions/PaymentStatus'
-        enum:
-        - paid
-        - cancelled
-        - pending
-        example: paid
-      title:
-        example: Supermercado
-        type: string
-      type:
-        allOf:
-        - $ref: '#/definitions/PaymentType'
-        enum:
-        - expense
-        - income
-        - invoice
-        - detail
-        example: expense
-      userId:
-        example: realfabecker@gmail
-        type: string
-      value:
-        example: 200
-        minimum: 1
-        type: number
-    required:
-    - description
-    - dueDate
-    - id
-    - title
-    - userId
-    - value
-    type: object
-  PaymentStatus:
-    enum:
-    - paid
-    - pending
-    - cancelled
-    type: string
-    x-enum-varnames:
-    - PaymentPaid
-    - PaymentPending
-    - PaymentCancelled
-  PaymentType:
-    enum:
-    - expense
-    - income
-    type: string
-    x-enum-varnames:
-    - PaymentTypeExpense
-    - PaymentTypeIncome
-  ResponseDTO-PagedDTO-Payment:
+  ResponseDTO-PagedDTO-Transaction:
     properties:
       code:
         example: 200
         type: integer
       data:
-        $ref: '#/definitions/PagedDTO-Payment'
+        $ref: '#/definitions/PagedDTO-Transaction'
       message:
         example: Operação realizada com sucesso
         type: string
@@ -138,13 +70,13 @@ definitions:
         example: success
         type: string
     type: object
-  ResponseDTO-Payment:
+  ResponseDTO-Transaction:
     properties:
       code:
         example: 200
         type: integer
       data:
-        $ref: '#/definitions/Payment'
+        $ref: '#/definitions/Transaction'
       message:
         example: Operação realizada com sucesso
         type: string
@@ -166,20 +98,6 @@ definitions:
         example: success
         type: string
     type: object
-  ResponseDTO-User:
-    properties:
-      code:
-        example: 200
-        type: integer
-      data:
-        $ref: '#/definitions/User'
-      message:
-        example: Operação realizada com sucesso
-        type: string
-      status:
-        example: success
-        type: string
-    type: object
   ResponseDTO-UserToken:
     properties:
       code:
@@ -194,6 +112,56 @@ definitions:
         example: success
         type: string
     type: object
+  Transaction:
+    description: Transaction information
+    properties:
+      createdAt:
+        example: "2023-04-07T16:45:30Z"
+        type: string
+      description:
+        example: Supermercado
+        type: string
+      dueDate:
+        example: "2023-05-07"
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/TransactionStatus'
+        enum:
+        - paid
+        - cancelled
+        - pending
+        example: paid
+      title:
+        example: Supermercado
+        type: string
+      transactionId:
+        example: 2023050701GXEH91YBVV40C1FK50S1P0KC
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/TransactionType'
+        enum:
+        - expense
+        - income
+        - invoice
+        - detail
+        example: expense
+      userId:
+        example: e8ec3241-03b4-4aed-99d5-d72e1922d9b8
+        type: string
+      value:
+        example: 200
+        minimum: 1
+        type: number
+    required:
+    - description
+    - dueDate
+    - title
+    - transactionId
+    - userId
+    - value
+    type: object
   TransactionDetail:
     description: Invoice Detail information
     properties:
@@ -203,7 +171,7 @@ definitions:
       description:
         example: Supermercado
         type: string
-      id:
+      detailId:
         example: 2023050701GXEH91YBVV40C1FK50S1P0KC
         type: string
       title:
@@ -213,7 +181,7 @@ definitions:
         example: 2023050701GXEH91YBVV40C1FK50S1P0XD
         type: string
       userId:
-        example: realfabecker@gmail
+        example: e8ec3241-03b4-4aed-99d5-d72e1922d9b8
         type: string
       value:
         example: 200
@@ -226,28 +194,25 @@ definitions:
     - userId
     - value
     type: object
-  User:
-    description: User information
-    properties:
-      id:
-        example: realfabecker@gmail.com
-        type: string
-      name:
-        example: Rafael Becker
-        type: string
-    type: object
-  UserToken:
-    properties:
-      AccessToken:
-        type: string
-      AuthChallange:
-        type: string
-      AuthSession:
-        type: string
-      RefreshToken:
-        type: string
-    type: object
-  WalletLoginChangeDTO:
+  TransactionStatus:
+    enum:
+    - paid
+    - pending
+    - cancelled
+    type: string
+    x-enum-varnames:
+    - TransactionPaid
+    - TransactionPending
+    - TransactionCancelled
+  TransactionType:
+    enum:
+    - expense
+    - income
+    type: string
+    x-enum-varnames:
+    - TransactionTypeExpense
+    - TransactionTypeIncome
+  UserLoginChangeDTO:
     properties:
       email:
         type: string
@@ -261,7 +226,7 @@ definitions:
     - new_password
     - session
     type: object
-  WalletLoginDTO:
+  UserLoginDTO:
     properties:
       email:
         type: string
@@ -271,6 +236,17 @@ definitions:
     required:
     - email
     - password
+    type: object
+  UserToken:
+    properties:
+      AccessToken:
+        type: string
+      AuthChallange:
+        type: string
+      AuthSession:
+        type: string
+      RefreshToken:
+        type: string
     type: object
 info:
   contact: {}
@@ -282,15 +258,15 @@ info:
   version: "1.0"
 paths:
   /auth/change:
-    get:
-      description: Change user password
+    post:
+      description: Change password
       parameters:
       - description: Login payload
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/WalletLoginChangeDTO'
+          $ref: '#/definitions/UserLoginChangeDTO'
       produces:
       - application/json
       responses:
@@ -302,19 +278,19 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
-      summary: Change user password
+      summary: Change password
       tags:
       - Auth
   /auth/login:
-    get:
-      description: Get user login by e-mail
+    post:
+      description: User login
       parameters:
       - description: Login payload
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/WalletLoginDTO'
+          $ref: '#/definitions/UserLoginDTO'
       produces:
       - application/json
       responses:
@@ -326,12 +302,12 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
-      summary: Get user login by e-mail
+      summary: User login
       tags:
       - Auth
   /transactions:
     get:
-      description: List user transactions
+      description: List transactions
       parameters:
       - description: Number of records
         in: query
@@ -342,7 +318,7 @@ paths:
         in: query
         name: page_token
         type: string
-      - description: Payment due date
+      - description: Transaction due date
         in: query
         name: due_date
         required: true
@@ -353,32 +329,32 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ResponseDTO-PagedDTO-Payment'
+            $ref: '#/definitions/ResponseDTO-PagedDTO-Transaction'
         "400":
           description: Bad Request
         "500":
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
-      summary: List user transactions
+      summary: List transactions
       tags:
       - Transactions
     post:
       description: Create a new transaction record
       parameters:
-      - description: Payment payload
+      - description: Transaction payload
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/Payment'
+          $ref: '#/definitions/Transaction'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ResponseDTO-Payment'
+            $ref: '#/definitions/ResponseDTO-Transaction'
         "400":
           description: Bad Request
         "500":
@@ -388,41 +364,11 @@ paths:
       summary: Create a transaction
       tags:
       - Transactions
-    put:
-      description: Update/Create a transaction record
-      parameters:
-      - description: Payment id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Payment payload
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/Payment'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ResponseDTO-Payment'
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Put a transaction
-      tags:
-      - Transactions
-  /transactions/{id}:
+  /transactions/{transactionId}:
     delete:
       description: Delete transaction
       parameters:
-      - description: Payment id
+      - description: Transaction id
         in: path
         name: id
         required: true
@@ -446,7 +392,7 @@ paths:
     get:
       description: Get transaction by id
       parameters:
-      - description: Payment id
+      - description: Transaction id
         in: path
         name: id
         required: true
@@ -457,7 +403,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ResponseDTO-Payment'
+            $ref: '#/definitions/ResponseDTO-Transaction'
         "400":
           description: Bad Request
         "500":
@@ -467,33 +413,37 @@ paths:
       summary: Get transaction by id
       tags:
       - Transactions
-  /transactions/{id}/detail:
-    post:
-      description: Create a new transaction detail record
+    put:
+      description: Update/Create a transaction record
       parameters:
-      - description: TransactionDetail payload
+      - description: Transaction id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Transaction payload
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/TransactionDetail'
+          $ref: '#/definitions/Transaction'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ResponseDTO-TransactionDetail'
+            $ref: '#/definitions/ResponseDTO-Transaction'
         "400":
           description: Bad Request
         "500":
           description: Internal Server Error
       security:
       - ApiKeyAuth: []
-      summary: Create a transaction detail
+      summary: Put a transaction
       tags:
       - Transactions
-  /transactions/{id}/details:
+  /transactions/{transactionId}/details:
     get:
       description: List transaction details
       parameters:
@@ -522,7 +472,63 @@ paths:
       summary: List transaction details
       tags:
       - Transactions
+    post:
+      description: Create a new transaction detail record
+      parameters:
+      - description: TransactionDetail payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/TransactionDetail'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseDTO-TransactionDetail'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create a transaction detail
+      tags:
+      - Transactions
   /transactions/{transactionId}/details/{detailId}:
+    delete:
+      description: Delete a transaction detail by its id
+      parameters:
+      - description: Transaction id
+        in: path
+        name: transactionId
+        required: true
+        type: string
+      - description: Detail id
+        in: path
+        name: detailId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseDTO-TransactionDetail'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a transaction detail by its id
+      tags:
+      - Transactions
     get:
       description: Get transaction detail by id
       parameters:
@@ -554,25 +560,6 @@ paths:
       summary: Get transaction detail by id
       tags:
       - Transactions
-  /users/profile:
-    get:
-      description: Get user information by e-mail
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ResponseDTO-User'
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      security:
-      - ApiKeyAuth: []
-      summary: Get user by e-mail
-      tags:
-      - Users
 securityDefinitions:
   ApiKeyAuth:
     description: Type 'Bearer ' and than your API token

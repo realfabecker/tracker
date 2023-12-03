@@ -21,7 +21,7 @@ import (
 type HttpHandler struct {
 	app              *fiber.App
 	walletConfig     *cordom.Config
-	walletController *routes.WalletController
+	walletController *routes.TransactionController
 	usersController  *routes.AuthController
 	authService      corpts.AuthService
 }
@@ -41,7 +41,7 @@ type HttpHandler struct {
 // @description				Type 'Bearer ' and than your API token
 func NewFiberHandler(
 	walletConfig *cordom.Config,
-	walletController *routes.WalletController,
+	walletController *routes.TransactionController,
 	usersController *routes.AuthController,
 	authService corpts.AuthService,
 ) corpts.HttpHandler {
@@ -111,13 +111,13 @@ func (a *HttpHandler) Register() error {
 
 	tran := wallet.Group("/transactions")
 	tran.Use(a.authHandler)
-	tran.Post("/", a.walletController.CreateUserPayment)
-	tran.Get("/", a.walletController.ListUserTransactions)
-	tran.Get("/:paymentId", a.walletController.GetPaymentById)
-	tran.Delete("/:paymentId", a.walletController.DeletePayment)
-	tran.Put("/:paymentId", a.walletController.PutUserPayment)
-	tran.Post("/:paymentId/details", a.walletController.CreateTransactionDetail)
-	tran.Get("/:paymentId/details", a.walletController.ListTransactionDetails)
+	tran.Post("/", a.walletController.CreateTransaction)
+	tran.Get("/", a.walletController.ListTransactions)
+	tran.Get("/:transactionId", a.walletController.GetTransactionById)
+	tran.Delete("/:transactionId", a.walletController.DeleteTransaction)
+	tran.Put("/:transactionId", a.walletController.PutTransaction)
+	tran.Post("/:transactionId/details", a.walletController.CreateTransactionDetail)
+	tran.Get("/:transactionId/details", a.walletController.ListTransactionDetails)
 	tran.Get("/:transactionId/details/:detailId", a.walletController.GetTransactionDetail)
 	return nil
 }

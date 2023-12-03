@@ -10,7 +10,7 @@ import (
 	"github.com/realfabecker/wallet/internal/adapters/common/env"
 	"github.com/realfabecker/wallet/internal/adapters/common/jwt"
 
-	payrep "github.com/realfabecker/wallet/internal/adapters/payments/repositories"
+	payrep "github.com/realfabecker/wallet/internal/adapters/transactions/repositories"
 	usrrep "github.com/realfabecker/wallet/internal/adapters/users/repositories"
 	usrsrv "github.com/realfabecker/wallet/internal/adapters/users/services"
 	cordom "github.com/realfabecker/wallet/internal/core/domain"
@@ -60,12 +60,12 @@ func init() {
 		return cognito.NewFromConfig(env), nil
 	})
 
-	Container.Provide(func(d *dynamodb.Client, cnf *cordom.Config) (corpts.WalletRepository, error) {
+	Container.Provide(func(d *dynamodb.Client, cnf *cordom.Config) (corpts.TransactionRepository, error) {
 		return payrep.NewWalletDynamoDBRepository(d, cnf.DynamoDBTableName, cnf.AppName)
 	})
 
-	Container.Provide(func(r corpts.WalletRepository) corpts.WalletService {
-		return corsrv.NewWalletService(r)
+	Container.Provide(func(r corpts.TransactionRepository) corpts.TransactionService {
+		return corsrv.NewTransactionService(r)
 	})
 
 	Container.Provide(func(
@@ -82,11 +82,11 @@ func init() {
 	})
 
 	Container.Provide(func(
-		r corpts.WalletRepository,
-		s corpts.WalletService,
+		r corpts.TransactionRepository,
+		s corpts.TransactionService,
 		t corpts.AuthService,
-	) (*routes.WalletController, error) {
-		return routes.NewWalletController(r, s, t), nil
+	) (*routes.TransactionController, error) {
+		return routes.NewTransactionController(r, s, t), nil
 	})
 
 	Container.Provide(func(d *dynamodb.Client, cnf *cordom.Config) (corpts.UserRepository, error) {
@@ -108,7 +108,7 @@ func init() {
 
 	Container.Provide(func(
 		walletConfig *cordom.Config,
-		walletController *routes.WalletController,
+		walletController *routes.TransactionController,
 		usersController *routes.AuthController,
 		authService corpts.AuthService,
 	) (corpts.HttpHandler, error) {

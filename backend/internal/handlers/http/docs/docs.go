@@ -20,15 +20,15 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/auth/change": {
-            "get": {
-                "description": "Change user password",
+            "post": {
+                "description": "Change password",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Change user password",
+                "summary": "Change password",
                 "parameters": [
                     {
                         "description": "Login payload",
@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/WalletLoginChangeDTO"
+                            "$ref": "#/definitions/UserLoginChangeDTO"
                         }
                     }
                 ],
@@ -57,15 +57,15 @@ const docTemplate = `{
             }
         },
         "/auth/login": {
-            "get": {
-                "description": "Get user login by e-mail",
+            "post": {
+                "description": "User login",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Get user login by e-mail",
+                "summary": "User login",
                 "parameters": [
                     {
                         "description": "Login payload",
@@ -73,7 +73,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/WalletLoginDTO"
+                            "$ref": "#/definitions/UserLoginDTO"
                         }
                     }
                 ],
@@ -100,14 +100,14 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "List user transactions",
+                "description": "List transactions",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Transactions"
                 ],
-                "summary": "List user transactions",
+                "summary": "List transactions",
                 "parameters": [
                     {
                         "type": "number",
@@ -124,7 +124,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Payment due date",
+                        "description": "Transaction due date",
                         "name": "due_date",
                         "in": "query",
                         "required": true
@@ -134,7 +134,87 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ResponseDTO-PagedDTO-Payment"
+                            "$ref": "#/definitions/ResponseDTO-PagedDTO-Transaction"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new transaction record",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Create a transaction",
+                "parameters": [
+                    {
+                        "description": "Transaction payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Transaction"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseDTO-Transaction"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/transactions/{transactionId}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get transaction by id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Get transaction by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Transaction id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseDTO-Transaction"
                         }
                     },
                     "400": {
@@ -162,18 +242,18 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Payment id",
+                        "description": "Transaction id",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Payment payload",
+                        "description": "Transaction payload",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Payment"
+                            "$ref": "#/definitions/Transaction"
                         }
                     }
                 ],
@@ -181,87 +261,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ResponseDTO-Payment"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create a new transaction record",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Transactions"
-                ],
-                "summary": "Create a transaction",
-                "parameters": [
-                    {
-                        "description": "Payment payload",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Payment"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ResponseDTO-Payment"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/transactions/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get transaction by id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Transactions"
-                ],
-                "summary": "Get transaction by id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Payment id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ResponseDTO-Payment"
+                            "$ref": "#/definitions/ResponseDTO-Transaction"
                         }
                     },
                     "400": {
@@ -289,7 +289,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Payment id",
+                        "description": "Transaction id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -311,49 +311,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/transactions/{id}/detail": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create a new transaction detail record",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Transactions"
-                ],
-                "summary": "Create a transaction detail",
-                "parameters": [
-                    {
-                        "description": "TransactionDetail payload",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/TransactionDetail"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ResponseDTO-TransactionDetail"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/transactions/{id}/details": {
+        "/transactions/{transactionId}/details": {
             "get": {
                 "security": [
                     {
@@ -388,6 +346,46 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ResponseDTO-PagedDTO-TransactionDetail"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new transaction detail record",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Create a transaction detail",
+                "parameters": [
+                    {
+                        "description": "TransactionDetail payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/TransactionDetail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseDTO-TransactionDetail"
                         }
                     },
                     "400": {
@@ -447,32 +445,49 @@ const docTemplate = `{
                         "description": "Internal Server Error"
                     }
                 }
-            }
-        },
-        "/users/profile": {
-            "get": {
+            },
+            "delete": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Get user information by e-mail",
+                "description": "Delete a transaction detail by its id",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Transactions"
                 ],
-                "summary": "Get user by e-mail",
+                "summary": "Delete a transaction detail by its id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Transaction id",
+                        "name": "transactionId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Detail id",
+                        "name": "detailId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ResponseDTO-User"
+                            "$ref": "#/definitions/ResponseDTO-TransactionDetail"
                         }
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -499,7 +514,7 @@ const docTemplate = `{
                 }
             }
         },
-        "PagedDTO-Payment": {
+        "PagedDTO-Transaction": {
             "type": "object",
             "properties": {
                 "has_more": {
@@ -509,7 +524,7 @@ const docTemplate = `{
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/Payment"
+                        "$ref": "#/definitions/Transaction"
                     }
                 },
                 "page_count": {
@@ -543,101 +558,7 @@ const docTemplate = `{
                 }
             }
         },
-        "Payment": {
-            "description": "Payment information",
-            "type": "object",
-            "required": [
-                "description",
-                "dueDate",
-                "id",
-                "title",
-                "userId",
-                "value"
-            ],
-            "properties": {
-                "createdAt": {
-                    "type": "string",
-                    "example": "2023-04-07T16:45:30Z"
-                },
-                "description": {
-                    "type": "string",
-                    "example": "Supermercado"
-                },
-                "dueDate": {
-                    "type": "string",
-                    "example": "2023-05-07"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "2023050701GXEH91YBVV40C1FK50S1P0KC"
-                },
-                "status": {
-                    "enum": [
-                        "paid",
-                        "cancelled",
-                        "pending"
-                    ],
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/PaymentStatus"
-                        }
-                    ],
-                    "example": "paid"
-                },
-                "title": {
-                    "type": "string",
-                    "example": "Supermercado"
-                },
-                "type": {
-                    "enum": [
-                        "expense",
-                        "income",
-                        "invoice",
-                        "detail"
-                    ],
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/PaymentType"
-                        }
-                    ],
-                    "example": "expense"
-                },
-                "userId": {
-                    "type": "string",
-                    "example": "realfabecker@gmail"
-                },
-                "value": {
-                    "type": "number",
-                    "minimum": 1,
-                    "example": 200
-                }
-            }
-        },
-        "PaymentStatus": {
-            "type": "string",
-            "enum": [
-                "paid",
-                "pending",
-                "cancelled"
-            ],
-            "x-enum-varnames": [
-                "PaymentPaid",
-                "PaymentPending",
-                "PaymentCancelled"
-            ]
-        },
-        "PaymentType": {
-            "type": "string",
-            "enum": [
-                "expense",
-                "income"
-            ],
-            "x-enum-varnames": [
-                "PaymentTypeExpense",
-                "PaymentTypeIncome"
-            ]
-        },
-        "ResponseDTO-PagedDTO-Payment": {
+        "ResponseDTO-PagedDTO-Transaction": {
             "type": "object",
             "properties": {
                 "code": {
@@ -645,7 +566,7 @@ const docTemplate = `{
                     "example": 200
                 },
                 "data": {
-                    "$ref": "#/definitions/PagedDTO-Payment"
+                    "$ref": "#/definitions/PagedDTO-Transaction"
                 },
                 "message": {
                     "type": "string",
@@ -677,7 +598,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ResponseDTO-Payment": {
+        "ResponseDTO-Transaction": {
             "type": "object",
             "properties": {
                 "code": {
@@ -685,7 +606,7 @@ const docTemplate = `{
                     "example": 200
                 },
                 "data": {
-                    "$ref": "#/definitions/Payment"
+                    "$ref": "#/definitions/Transaction"
                 },
                 "message": {
                     "type": "string",
@@ -717,26 +638,6 @@ const docTemplate = `{
                 }
             }
         },
-        "ResponseDTO-User": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer",
-                    "example": 200
-                },
-                "data": {
-                    "$ref": "#/definitions/User"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Operação realizada com sucesso"
-                },
-                "status": {
-                    "type": "string",
-                    "example": "success"
-                }
-            }
-        },
         "ResponseDTO-UserToken": {
             "type": "object",
             "properties": {
@@ -754,6 +655,76 @@ const docTemplate = `{
                 "status": {
                     "type": "string",
                     "example": "success"
+                }
+            }
+        },
+        "Transaction": {
+            "description": "Transaction information",
+            "type": "object",
+            "required": [
+                "description",
+                "dueDate",
+                "title",
+                "transactionId",
+                "userId",
+                "value"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "example": "2023-04-07T16:45:30Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Supermercado"
+                },
+                "dueDate": {
+                    "type": "string",
+                    "example": "2023-05-07"
+                },
+                "status": {
+                    "enum": [
+                        "paid",
+                        "cancelled",
+                        "pending"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/TransactionStatus"
+                        }
+                    ],
+                    "example": "paid"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Supermercado"
+                },
+                "transactionId": {
+                    "type": "string",
+                    "example": "2023050701GXEH91YBVV40C1FK50S1P0KC"
+                },
+                "type": {
+                    "enum": [
+                        "expense",
+                        "income",
+                        "invoice",
+                        "detail"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/TransactionType"
+                        }
+                    ],
+                    "example": "expense"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "e8ec3241-03b4-4aed-99d5-d72e1922d9b8"
+                },
+                "value": {
+                    "type": "number",
+                    "minimum": 1,
+                    "example": 200
                 }
             }
         },
@@ -776,7 +747,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Supermercado"
                 },
-                "id": {
+                "detailId": {
                     "type": "string",
                     "example": "2023050701GXEH91YBVV40C1FK50S1P0KC"
                 },
@@ -790,7 +761,7 @@ const docTemplate = `{
                 },
                 "userId": {
                     "type": "string",
-                    "example": "realfabecker@gmail"
+                    "example": "e8ec3241-03b4-4aed-99d5-d72e1922d9b8"
                 },
                 "value": {
                     "type": "integer",
@@ -799,38 +770,31 @@ const docTemplate = `{
                 }
             }
         },
-        "User": {
-            "description": "User information",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "example": "realfabecker@gmail.com"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Rafael Becker"
-                }
-            }
+        "TransactionStatus": {
+            "type": "string",
+            "enum": [
+                "paid",
+                "pending",
+                "cancelled"
+            ],
+            "x-enum-varnames": [
+                "TransactionPaid",
+                "TransactionPending",
+                "TransactionCancelled"
+            ]
         },
-        "UserToken": {
-            "type": "object",
-            "properties": {
-                "AccessToken": {
-                    "type": "string"
-                },
-                "AuthChallange": {
-                    "type": "string"
-                },
-                "AuthSession": {
-                    "type": "string"
-                },
-                "RefreshToken": {
-                    "type": "string"
-                }
-            }
+        "TransactionType": {
+            "type": "string",
+            "enum": [
+                "expense",
+                "income"
+            ],
+            "x-enum-varnames": [
+                "TransactionTypeExpense",
+                "TransactionTypeIncome"
+            ]
         },
-        "WalletLoginChangeDTO": {
+        "UserLoginChangeDTO": {
             "type": "object",
             "required": [
                 "email",
@@ -850,7 +814,7 @@ const docTemplate = `{
                 }
             }
         },
-        "WalletLoginDTO": {
+        "UserLoginDTO": {
             "type": "object",
             "required": [
                 "email",
@@ -863,6 +827,23 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "minLength": 6
+                }
+            }
+        },
+        "UserToken": {
+            "type": "object",
+            "properties": {
+                "AccessToken": {
+                    "type": "string"
+                },
+                "AuthChallange": {
+                    "type": "string"
+                },
+                "AuthSession": {
+                    "type": "string"
+                },
+                "RefreshToken": {
+                    "type": "string"
                 }
             }
         }

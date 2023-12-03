@@ -12,7 +12,7 @@ import (
 	corpts "github.com/realfabecker/wallet/internal/core/ports"
 )
 
-// WalletRepository
+// TransactionRepository
 type UserRepository struct {
 	db    *dynamodb.Client
 	table string
