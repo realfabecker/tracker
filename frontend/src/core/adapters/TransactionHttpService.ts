@@ -26,7 +26,7 @@ export class TransactionsHttpService implements ITransactionService {
     status: TransactionStatus;
     page?: string;
   }): Promise<ResponseDTO<PagedDTO<Transaction>>> {
-    const url = new URL(`${this.baseUrl}/wallet/payments`);
+    const url = new URL(`${this.baseUrl}/transactions`);
     url.searchParams.append("limit", "" + limit);
     url.searchParams.append("period", period.toLowerCase());
     if (status.toLowerCase() !== "all") {
@@ -48,7 +48,7 @@ export class TransactionsHttpService implements ITransactionService {
   async addTransaction(
     body: Partial<Transaction>
   ): Promise<ResponseDTO<Transaction>> {
-    const url = new URL(`${this.baseUrl}/wallet/payments`);
+    const url = new URL(`${this.baseUrl}/transactions`);
     const resp = await fetch(url.toString(), {
       method: "POST",
       headers: {
@@ -64,7 +64,7 @@ export class TransactionsHttpService implements ITransactionService {
   }
 
   async deleteTransaction(id: string): Promise<void> {
-    const url = new URL(`${this.baseUrl}/wallet/payments/${id}`);
+    const url = new URL(`${this.baseUrl}/transactions/${id}`);
     const resp = await fetch(url.toString(), {
       method: "DELETE",
       headers: {
@@ -77,7 +77,7 @@ export class TransactionsHttpService implements ITransactionService {
   }
 
   async editTransaction(id: string, body: Partial<Transaction>): Promise<void> {
-    const url = new URL(`${this.baseUrl}/wallet/payments/${id}`);
+    const url = new URL(`${this.baseUrl}/transactions/${id}`);
     const resp = await fetch(url.toString(), {
       method: "PUT",
       headers: {
@@ -92,7 +92,7 @@ export class TransactionsHttpService implements ITransactionService {
   }
 
   async getTransaction(id: string): Promise<ResponseDTO<Transaction>> {
-    const url = new URL(`${this.baseUrl}/wallet/payments/${id}`);
+    const url = new URL(`${this.baseUrl}/transactions/${id}`);
     const resp = await fetch(url.toString(), {
       method: "GET",
       headers: {

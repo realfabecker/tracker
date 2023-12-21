@@ -14,6 +14,7 @@ type TransactionRepository interface {
 	ListTransactionDetails(transactions string, q cordom.PagedDTOQuery) (*cordom.PagedDTO[cordom.TransactionDetail], error)
 	GetTransactionDetail(transactionId string, detailId string) (*cordom.TransactionDetail, error)
 	DeleteTransactionDetail(transactionId string, detailId string) error
+	PutTransactionDetail(p *cordom.TransactionDetail) (*cordom.TransactionDetail, error)
 }
 
 type TransactionService interface {
@@ -26,4 +27,5 @@ type TransactionService interface {
 	ListTransactionDetails(transactions string, q cordom.PagedDTOQuery) (*cordom.PagedDTO[cordom.TransactionDetail], error)
 	GetTransactionDetail(transactionId string, detailId string) (*cordom.TransactionDetail, error)
 	DeleteTransactionDetail(transactionId string, detailId string) error
+	PutTransactionDetail(user string, p *cordom.TransactionDetail) (*cordom.TransactionDetail, error)
 }

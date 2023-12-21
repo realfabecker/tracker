@@ -55,3 +55,12 @@ func (s *TransactionService) GetTransactionDetail(transactionId string, detailId
 func (s *TransactionService) DeleteTransactionDetail(transactionId string, detailId string) error {
 	return s.TransactionRepository.DeleteTransactionDetail(transactionId, detailId)
 }
+
+func (s *TransactionService) PutTransactionDetail(user string, d *cordom.TransactionDetail) (*cordom.TransactionDetail, error) {
+	if p, err := s.GetTransactionById(user, d.TransactionId); err != nil {
+		return nil, err
+	} else if p == nil {
+		return nil, errors.New("transaction does not exists")
+	}
+	return s.TransactionRepository.PutTransactionDetail(d)
+}

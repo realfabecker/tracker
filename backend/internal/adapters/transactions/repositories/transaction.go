@@ -303,3 +303,32 @@ func (u *WalletDynamoDbRepository) DeleteTransactionDetail(transactionId string,
 	})
 	return err
 }
+
+// CreateTransactionDetail
+func (u *WalletDynamoDbRepository) PutTransactionDetail(i *cordom.TransactionDetail) (*cordom.TransactionDetail, error) {
+	r, err := u.GetTransactionDetail(i.TransactionId, i.DetailId)
+	if err != nil {
+		return nil, err
+	}
+	if r == nil {
+		return u.CreateTransactionDetail(i)
+	}
+
+	td := transactionDetail{TransactionDetail: i}
+	td.PK = "APP#" + u.app + "#MOVT#" + i.TransactionId
+	td.SK = "APP#" + u.app + "#MOVT_DETAIL#" + i.DetailId
+
+	avs, err := attributevalue.MarshalMap(td)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := u.db.PutItem(context.TODO(), &dynamodb.PutItemInput{
+		TableName: aws.String(u.table),
+		Item:      avs,
+	}); err != nil {
+		return nil, err
+	}
+
+	return td.TransactionDetail, nil
+}

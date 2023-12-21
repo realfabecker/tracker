@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@store/store";
 import { getActionAuthLogin } from "@store/auth/creators/auth";
 import { ActionStatus } from "@core/domain/domain";
-
-import "./Login.css";
 import { useNavigate } from "react-router";
 
 export default function Login() {
@@ -14,7 +12,7 @@ export default function Login() {
   const [passw, setPassw] = useState("");
 
   return (
-    <main>
+    <main id="login">
       <header>
         <h1>T$acker</h1>
       </header>
@@ -25,7 +23,7 @@ export default function Login() {
           dispatch(getActionAuthLogin({ email, password: passw, navigate }));
         }}
       >
-        <div className="basic">
+        <div className="input-wrapper">
           <input
             type="email"
             value={email}

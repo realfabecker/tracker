@@ -24,7 +24,7 @@ export enum TransactionPeriod {
 }
 
 export interface Transaction {
-  id: string;
+  paymentId: string;
   userId: string;
   title: string;
   type: string;
@@ -55,4 +55,5 @@ export interface LoginDTO {
 export enum RoutesEnum {
   Login = "/login",
   Transactions = "/transactions",
+  Dashboard = "/dashboard",
 }

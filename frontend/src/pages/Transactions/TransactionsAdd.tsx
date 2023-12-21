@@ -47,7 +47,10 @@ function TransactionsAdd() {
   return (
     <>
       <form id="transaction" onSubmit={handleFormSubmit}>
-        <div className="basic">
+        <div className="input-wrapper">
+          <label htmlFor="title">
+            Valor <span>(valor do lançamento)</span>
+          </label>
           <input
             type="text"
             id="title"
@@ -63,20 +66,9 @@ function TransactionsAdd() {
             pattern="^(\+|-)?\d+(,\d{2})?$"
             required
           ></input>
-          <input
-            type="date"
-            id="dueDate"
-            value={d.date}
-            onChange={(e) =>
-              setD((prevState) => ({
-                ...prevState,
-                date: e.target.value,
-              }))
-            }
-            required
-          />
         </div>
-        <div className="description">
+        <div className="input-wrapper">
+          <label htmlFor="description">Descrição</label>
           <input
             type="text"
             id="description"
@@ -91,9 +83,31 @@ function TransactionsAdd() {
             required
           ></input>
         </div>
-        <button type="submit" disabled={store.status === ActionStatus.LOADING}>
-          {store.status === ActionStatus.LOADING ? "Loading..." : "Novo"}
-        </button>
+        <div className="input-wrapper">
+          <label htmlFor="dueDate">Vencimento</label>
+          <input
+            type="date"
+            id="dueDate"
+            value={d.date}
+            onChange={(e) =>
+              setD((prevState) => ({
+                ...prevState,
+                date: e.target.value,
+              }))
+            }
+            required
+          />
+        </div>
+
+        <div className="actions">
+          <button
+            type="submit"
+            disabled={store.status === ActionStatus.LOADING}
+          >
+            {store.status === ActionStatus.LOADING ? "Loading..." : "Novo"}
+          </button>
+        </div>
+
         {store.error?.message && (
           <div className="error">{store.error.message}</div>
         )}
@@ -101,4 +115,5 @@ function TransactionsAdd() {
     </>
   );
 }
+
 export default TransactionsAdd;

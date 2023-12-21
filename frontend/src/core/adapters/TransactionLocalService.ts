@@ -41,7 +41,7 @@ export class TransactionsLocalService implements ITransactionService {
       localStorage.getItem("transactions") || "[]"
     );
     items.push({
-      id: Math.random().toString(32).slice(2),
+      paymentId: Math.random().toString(32).slice(2),
       ...body,
     });
     localStorage.setItem("transactions", JSON.stringify(items));
@@ -56,7 +56,7 @@ export class TransactionsLocalService implements ITransactionService {
     const items: Partial<Transaction>[] = JSON.parse(
       localStorage.getItem("transactions") || "[]"
     );
-    const data = items.filter((i) => i.id !== id);
+    const data = items.filter((i) => i.paymentId !== id);
     localStorage.setItem("transactions", JSON.stringify(data));
   }
 
@@ -64,7 +64,7 @@ export class TransactionsLocalService implements ITransactionService {
     const items: Partial<Transaction>[] = JSON.parse(
       localStorage.getItem("transactions") || "[]"
     );
-    const data = items.filter((i) => i.id == id);
+    const data = items.filter((i) => i.paymentId == id);
     return {
       status: "success",
       data: data[0] as Transaction,
@@ -76,7 +76,7 @@ export class TransactionsLocalService implements ITransactionService {
     const items: Partial<Transaction>[] = JSON.parse(
       localStorage.getItem("transactions") || "[]"
     );
-    const index = items.findIndex((i) => i.id == id);
+    const index = items.findIndex((i) => i.paymentId == id);
     items[index] = {
       ...items[index],
       ...body,

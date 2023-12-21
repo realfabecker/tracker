@@ -53,7 +53,10 @@ function TransactionsEdit() {
   return (
     <>
       <form id="transaction" onSubmit={handleFormSubmit}>
-        <div className="basic">
+        <div className="input-wrapper">
+          <label htmlFor="title">
+            Valor <span>(valor do lançamento)</span>
+          </label>
           <input
             type="text"
             id="title"
@@ -63,6 +66,20 @@ function TransactionsEdit() {
             pattern="^R\$\s{1}\d+(,\d{2})?"
             required
           ></input>
+        </div>
+        <div className="input-wrapper">
+          <label htmlFor="description">Descrição</label>
+          <input
+            type="text"
+            id="description"
+            value={desc}
+            onChange={(e) => setDesc(e.target.value)}
+            placeholder="descrição"
+            required
+          />
+        </div>
+        <div className="input-wrapper">
+          <label htmlFor="dueDate">Vencimento</label>
           <input
             type="date"
             id="dueDate"
@@ -73,16 +90,6 @@ function TransactionsEdit() {
             disabled={true}
           />
         </div>
-        <div className="description">
-          <input
-            type="text"
-            id="description"
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-            placeholder="descrição"
-            required
-          ></input>
-        </div>
         <div className="actions">
           <button
             id="update"
@@ -90,11 +97,12 @@ function TransactionsEdit() {
             title="Salvar"
             disabled={store.status === ActionStatus.LOADING}
           >
-            <span>&#128440;</span>
+            Salvar
           </button>
           <button
             id="remove"
             title="Remover"
+            className="danger"
             onClick={() =>
               id &&
               dispatch(getActionDeleteTransaction(id)).then(() =>
@@ -102,7 +110,7 @@ function TransactionsEdit() {
               )
             }
           >
-            <span>{`\u267B`}</span>
+            Excluir
           </button>
         </div>
         {store.error?.message && (
@@ -112,4 +120,5 @@ function TransactionsEdit() {
     </>
   );
 }
+
 export default TransactionsEdit;
