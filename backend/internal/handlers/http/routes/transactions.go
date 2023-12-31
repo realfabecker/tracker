@@ -36,7 +36,7 @@ func NewTransactionController(
 //	@Success		200			{object}	cordom.ResponseDTO[cordom.PagedDTO[cordom.Transaction]]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions [get]
+//	@Router			/wallet/transactions [get]
 func (w *TransactionController) ListTransactions(c *fiber.Ctx) error {
 	q := cordom.TransactionPagedDTOQuery{}
 	if err := c.QueryParser(&q); err != nil {
@@ -75,7 +75,7 @@ func (w *TransactionController) ListTransactions(c *fiber.Ctx) error {
 //	@Success		200	{object}	cordom.ResponseDTO[cordom.Transaction]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions/{transactionId} [get]
+//	@Router			/wallet/transactions/{transactionId} [get]
 func (w *TransactionController) GetTransactionById(c *fiber.Ctx) error {
 	p := cordom.Transaction{}
 	if err := c.ParamsParser(&p); err != nil {
@@ -116,7 +116,7 @@ func (w *TransactionController) GetTransactionById(c *fiber.Ctx) error {
 //	@Success		200		{object}	cordom.ResponseDTO[cordom.Transaction]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions [post]
+//	@Router			/wallet/transactions [post]
 func (w *TransactionController) CreateTransaction(c *fiber.Ctx) error {
 	user, ok := c.Locals("user").(*jwt.RegisteredClaims)
 	if !ok {
@@ -151,7 +151,7 @@ func (w *TransactionController) CreateTransaction(c *fiber.Ctx) error {
 //	@Success		200	{object}	cordom.EmptyResponseDTO
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions/{transactionId} [delete]
+//	@Router			/wallet/transactions/{transactionId} [delete]
 func (w *TransactionController) DeleteTransaction(c *fiber.Ctx) error {
 	p := cordom.Transaction{}
 	if err := c.ParamsParser(&p); err != nil {
@@ -194,7 +194,7 @@ func (w *TransactionController) DeleteTransaction(c *fiber.Ctx) error {
 //	@Success		200		{object}	cordom.ResponseDTO[cordom.Transaction]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions/{transactionId} [put]
+//	@Router			/wallet/transactions/{transactionId} [put]
 func (w *TransactionController) PutTransaction(c *fiber.Ctx) error {
 	user, ok := c.Locals("user").(*jwt.RegisteredClaims)
 	if !ok {
@@ -240,7 +240,7 @@ func (w *TransactionController) PutTransaction(c *fiber.Ctx) error {
 //	@Success		200		{object}	cordom.ResponseDTO[cordom.TransactionDetail]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions/{transactionId}/details [post]
+//	@Router			/wallet/transactions/{transactionId}/details [post]
 func (w *TransactionController) CreateTransactionDetail(c *fiber.Ctx) error {
 	user, ok := c.Locals("user").(*jwt.RegisteredClaims)
 	if !ok {
@@ -277,7 +277,7 @@ func (w *TransactionController) CreateTransactionDetail(c *fiber.Ctx) error {
 	})
 }
 
-// ListTransasctionDetails
+// ListTransactionDetails
 //
 //	@Summary		List transaction details
 //	@Description	List transaction details
@@ -289,7 +289,7 @@ func (w *TransactionController) CreateTransactionDetail(c *fiber.Ctx) error {
 //	@Success		200			{object}	cordom.ResponseDTO[cordom.PagedDTO[cordom.TransactionDetail]]
 //	@Failure		400
 //	@Failure		500
-//	@Router			/transactions/{transactionId}/details [get]
+//	@Router			/wallet/transactions/{transactionId}/details [get]
 func (w *TransactionController) ListTransactionDetails(c *fiber.Ctx) error {
 	q := cordom.PagedDTOQuery{}
 	if err := c.QueryParser(&q); err != nil {
@@ -322,7 +322,7 @@ func (w *TransactionController) ListTransactionDetails(c *fiber.Ctx) error {
 	})
 }
 
-// Get transaction detail by id
+// GetTransactionDetail
 //
 //	@Summary		Get transaction detail by id
 //	@Description	Get transaction detail by id
@@ -335,7 +335,7 @@ func (w *TransactionController) ListTransactionDetails(c *fiber.Ctx) error {
 //	@Failure		400
 //	@Failure		404
 //	@Failure		500
-//	@Router			/transactions/{transactionId}/details/{detailId} [get]
+//	@Router			/wallet/transactions/{transactionId}/details/{detailId} [get]
 func (w *TransactionController) GetTransactionDetail(c *fiber.Ctx) error {
 	p := cordom.TransactionDetail{}
 	if err := c.ParamsParser(&p); err != nil {
@@ -365,7 +365,7 @@ func (w *TransactionController) GetTransactionDetail(c *fiber.Ctx) error {
 	})
 }
 
-// Delete delete a transaction detail by its id
+// DeleteTransactionDetail
 //
 //	@Summary		Delete a transaction detail by its id
 //	@Description	Delete a transaction detail by its id
@@ -378,7 +378,7 @@ func (w *TransactionController) GetTransactionDetail(c *fiber.Ctx) error {
 //	@Failure		400
 //	@Failure		404
 //	@Failure		500
-//	@Router			/transactions/{transactionId}/details/{detailId} [delete]
+//	@Router			/wallet/transactions/{transactionId}/details/{detailId} [delete]
 func (w *TransactionController) DeleteTransactionDetail(c *fiber.Ctx) error {
 	p := cordom.TransactionDetail{}
 	if err := c.ParamsParser(&p); err != nil {

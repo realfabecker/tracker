@@ -2,16 +2,16 @@ package container
 
 import (
 	"context"
+	"github.com/gofiber/fiber/v2/log"
 
 	awsconf "github.com/aws/aws-sdk-go-v2/config"
 	cognito "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/realfabecker/wallet/internal/adapters/common/cache"
-	"github.com/realfabecker/wallet/internal/adapters/common/env"
+	"github.com/realfabecker/wallet/internal/adapters/common/dotenv"
 	"github.com/realfabecker/wallet/internal/adapters/common/jwt"
 
 	payrep "github.com/realfabecker/wallet/internal/adapters/transactions/repositories"
-	usrrep "github.com/realfabecker/wallet/internal/adapters/users/repositories"
 	usrsrv "github.com/realfabecker/wallet/internal/adapters/users/services"
 	cordom "github.com/realfabecker/wallet/internal/core/domain"
 	corpts "github.com/realfabecker/wallet/internal/core/ports"
@@ -23,100 +23,105 @@ import (
 
 var Container dig.Container
 
-// init
 func init() {
 	Container = *dig.New()
+	if err := reg3(); err != nil {
+		log.Fatalf("unable to register services %v", err)
+	}
+}
 
-	Container.Provide(func() (*cordom.Config, error) {
+func reg3() error {
+
+	if err := Container.Provide(func() (*cordom.Config, error) {
 		cnf := &cordom.Config{}
-		if err := env.Unmarshal(cnf); err != nil {
+		if err := dotenv.Unmarshal(cnf); err != nil {
 			return nil, err
 		}
 		return cnf, nil
-	})
+	}); err != nil {
+		return err
+	}
 
-	Container.Provide(func(cnf *cordom.Config) (*dynamodb.Client, error) {
+	if err := Container.Provide(func(cnf *cordom.Config) (*dynamodb.Client, error) {
 		env, err := awsconf.LoadDefaultConfig(context.TODO())
 		if err != nil {
 			return nil, err
 		}
 		return dynamodb.NewFromConfig(env), nil
-	})
+	}); err != nil {
+		return err
+	}
 
-	Container.Provide(func() corpts.CacheHandler {
+	if err := Container.Provide(func() corpts.CacheHandler {
 		return cache.NewFileCache()
-	})
+	}); err != nil {
+		return err
+	}
 
-	Container.Provide(func(cache corpts.CacheHandler) corpts.JwtHandler {
+	if err := Container.Provide(func(cache corpts.CacheHandler) corpts.JwtHandler {
 		return jwt.NewJwtHandler(cache)
-	})
+	}); err != nil {
+		return err
+	}
 
-	Container.Provide(func(cnf *cordom.Config) (*cognito.Client, error) {
+	if err := Container.Provide(func(cnf *cordom.Config) (*cognito.Client, error) {
 		env, err := awsconf.LoadDefaultConfig(context.TODO())
 		if err != nil {
 			return nil, err
 		}
-
 		return cognito.NewFromConfig(env), nil
-	})
+	}); err != nil {
+		return err
+	}
 
-	Container.Provide(func(d *dynamodb.Client, cnf *cordom.Config) (corpts.TransactionRepository, error) {
+	if err := Container.Provide(func(d *dynamodb.Client, cnf *cordom.Config) (corpts.TransactionRepository, error) {
 		return payrep.NewWalletDynamoDBRepository(d, cnf.DynamoDBTableName, cnf.AppName)
-	})
+	}); err != nil {
+		return err
+	}
 
-	Container.Provide(func(r corpts.TransactionRepository) corpts.TransactionService {
+	if err := Container.Provide(func(r corpts.TransactionRepository) corpts.TransactionService {
 		return corsrv.NewTransactionService(r)
-	})
+	}); err != nil {
+		return err
+	}
 
-	Container.Provide(func(
+	if err := Container.Provide(func(
 		walletConfig *cordom.Config,
 		cognitoClient *cognito.Client,
 		jwtHandler corpts.JwtHandler,
 	) corpts.AuthService {
 		return usrsrv.NewCognitoAuthService(
-			walletConfig.CognitoClientId,
 			walletConfig.CognitoJwkUrl,
-			cognitoClient,
 			jwtHandler,
 		)
-	})
+	}); err != nil {
+		return err
+	}
 
-	Container.Provide(func(
+	if err := Container.Provide(func(
 		r corpts.TransactionRepository,
 		s corpts.TransactionService,
 		t corpts.AuthService,
 	) (*routes.TransactionController, error) {
 		return routes.NewTransactionController(r, s, t), nil
-	})
+	}); err != nil {
+		return err
+	}
 
-	Container.Provide(func(d *dynamodb.Client, cnf *cordom.Config) (corpts.UserRepository, error) {
-		return usrrep.NewUserRepository(d, cnf.DynamoDBTableName, cnf.AppName)
-	})
-
-	Container.Provide(func(
-		r corpts.UserRepository,
-	) (corpts.UserService, error) {
-		return corsrv.NewUserService(r), nil
-	})
-
-	Container.Provide(func(
-		a corpts.AuthService,
-		u corpts.UserService,
-	) (*routes.AuthController, error) {
-		return routes.NewAuthController(a, u), nil
-	})
-
-	Container.Provide(func(
+	if err := Container.Provide(func(
 		walletConfig *cordom.Config,
 		walletController *routes.TransactionController,
-		usersController *routes.AuthController,
 		authService corpts.AuthService,
 	) (corpts.HttpHandler, error) {
 		return http.NewFiberHandler(
 			walletConfig,
 			walletController,
-			usersController,
 			authService,
 		), nil
-	})
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }

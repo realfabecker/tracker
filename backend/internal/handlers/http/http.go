@@ -17,12 +17,10 @@ import (
 	"github.com/realfabecker/wallet/internal/handlers/http/routes"
 )
 
-// HttpHandler
-type HttpHandler struct {
+type Handler struct {
 	app              *fiber.App
 	walletConfig     *cordom.Config
 	walletController *routes.TransactionController
-	usersController  *routes.AuthController
 	authService      corpts.AuthService
 }
 
@@ -31,7 +29,6 @@ type HttpHandler struct {
 //	@description				Wallet Rest API
 //	@license.name				Apache 2.0
 //	@license.url				http://www.apache.org/licenses/LICENSE-2.0.html
-//	@BasePath					/api/wallet
 //	@securityDefinitions.apikey	ApiKeyAuth
 //	@in							header
 //	@name						Authorization
@@ -39,7 +36,6 @@ type HttpHandler struct {
 func NewFiberHandler(
 	walletConfig *cordom.Config,
 	walletController *routes.TransactionController,
-	usersController *routes.AuthController,
 	authService corpts.AuthService,
 ) corpts.HttpHandler {
 
@@ -66,28 +62,23 @@ func NewFiberHandler(
 			})
 		},
 	})
-	return &HttpHandler{
+	return &Handler{
 		app,
 		walletConfig,
 		walletController,
-		usersController,
 		authService,
 	}
 }
 
-// GetApp
-func (a *HttpHandler) GetApp() interface{} {
+func (a *Handler) GetApp() interface{} {
 	return a.app
 }
 
-// Listen
-func (a *HttpHandler) Listen(port string) error {
+func (a *Handler) Listen(port string) error {
 	return a.app.Listen(":" + port)
 }
 
-// Register
-func (a *HttpHandler) Register() error {
-
+func (a *Handler) Register() error {
 	a.app.Use(limiter.New(limiter.Config{
 		Max:        100,
 		Expiration: 30 * time.Second,
@@ -102,10 +93,6 @@ func (a *HttpHandler) Register() error {
 	a.app.Get("/docs/*", swagger.HandlerDefault)
 	wallet := a.app.Group("/wallet")
 
-	auth := wallet.Group("/auth")
-	auth.Post("/login", a.usersController.Login)
-	auth.Post("/change", a.usersController.Change)
-
 	tran := wallet.Group("/transactions")
 	tran.Use(a.authHandler)
 	tran.Post("/", a.walletController.CreateTransaction)
@@ -119,18 +106,15 @@ func (a *HttpHandler) Register() error {
 	return nil
 }
 
-// authHandler
-func (j *HttpHandler) authHandler(c *fiber.Ctx) error {
+func (a *Handler) authHandler(c *fiber.Ctx) error {
 	auth := c.Get("authorization")
 	if len(auth) < (len("bearer") + 1) {
 		return fiber.NewError(fiber.ErrUnauthorized.Code)
 	}
-
-	u, err := j.authService.Verify(auth[len("bearer")+1:])
+	u, err := a.authService.Verify(auth[len("bearer")+1:])
 	if err != nil {
 		return fiber.NewError(fiber.ErrUnauthorized.Code, err.Error())
 	}
-
 	c.Locals("user", u)
 	return c.Next()
 }

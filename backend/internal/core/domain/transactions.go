@@ -32,14 +32,12 @@ type TransactionDetail struct {
 	CreatedAt     string `json:"createdAt" example:"2023-04-07T16:45:30Z"`
 } //	@name	TransactionDetail
 
-// TransactionPagedDTOQuery
 type TransactionPagedDTOQuery struct {
 	PagedDTOQuery
 	DueDate *int32             `query:"due_date" validate:"omitempty" example:"2023"`
 	Period  *TransactionPeriod `query:"period" validate:"omitempty,oneof=this_week this_month last_month next_month" example:"this_month"`
 } //	@name	TransactionPagedDTOQuery
 
-// GetDueDate
 func (p TransactionPagedDTOQuery) GetDueDate() string {
 	if p.Period != nil {
 		return p.Period.Format()
@@ -50,14 +48,12 @@ func (p TransactionPagedDTOQuery) GetDueDate() string {
 	return time.Now().Format("20060102")
 }
 
-// TransactionPeriod
 type TransactionPeriod string
 
 const (
-	TransactionThisMonth    TransactionPeriod = "this_month"
-	TransactionLastMonth    TransactionPeriod = "last_month"
-	TransactionNextMonth    TransactionPeriod = "next_month"
-	TransactionPeridUnknown TransactionPeriod = "unknown"
+	TransactionThisMonth TransactionPeriod = "this_month"
+	TransactionLastMonth TransactionPeriod = "last_month"
+	TransactionNextMonth TransactionPeriod = "next_month"
 )
 
 func (p TransactionPeriod) String() string {
@@ -72,7 +68,6 @@ func (p TransactionPeriod) String() string {
 	return "unknown"
 }
 
-// Format
 func (p TransactionPeriod) Format() string {
 	year, month, _ := time.Now().Date()
 	switch p {
@@ -86,7 +81,6 @@ func (p TransactionPeriod) Format() string {
 	return time.Now().Format("20060102")
 }
 
-// TransactionStatus
 type TransactionStatus string // @name	TransactionStatus
 
 const (
@@ -107,7 +101,6 @@ func (p TransactionStatus) String() string {
 	return "unknown"
 }
 
-// TransactionType
 type TransactionType string // @name TransactionType
 
 const (
