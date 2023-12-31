@@ -26,19 +26,16 @@ type HttpHandler struct {
 	authService      corpts.AuthService
 }
 
-//	@title			Wallet Rest API
-//	@version		1.0
-//	@description	Wallet Rest API
-
-//	@license.name	Apache 2.0
-//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
-
-//	@BasePath	/api/wallet
-
-// @securityDefinitions.apikey	ApiKeyAuth
-// @in							header
-// @name						Authorization
-// @description				Type 'Bearer ' and than your API token
+//	@title						Wallet Rest API
+//	@version					1.0
+//	@description				Wallet Rest API
+//	@license.name				Apache 2.0
+//	@license.url				http://www.apache.org/licenses/LICENSE-2.0.html
+//	@BasePath					/api/wallet
+//	@securityDefinitions.apikey	ApiKeyAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Type 'Bearer ' and than your API token
 func NewFiberHandler(
 	walletConfig *cordom.Config,
 	walletController *routes.TransactionController,

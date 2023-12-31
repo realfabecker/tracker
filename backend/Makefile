@@ -1,3 +1,6 @@
+.PHONY: build
+build: build-docs build-http
+
 .PHONY: build-docs
 build-docs:
 	swag init --parseDependency --parseInternal -g http.go -d "./internal/handlers/http" -o "./internal/handlers/http/docs"
