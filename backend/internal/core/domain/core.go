@@ -4,8 +4,6 @@ type Config struct {
 	AppPort           string `env:"APP_PORT"`
 	AppName           string `env:"APP_NAME"`
 	AppHost           string `env:"APP_HOST"`
-	CognitoClientId   string `env:"COGNITO_CLIENT_ID"`
-	CognitoJwkUrl     string `env:"COGNITO_JWK_URL"`
 	DynamoDBTableName string `env:"DYNAMODB_TABLE_NAME"`
 }
 

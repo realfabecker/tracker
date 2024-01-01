@@ -2,7 +2,6 @@ package ports
 
 import (
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
 type HttpHandler interface {
@@ -17,9 +16,7 @@ type CacheHandler interface {
 }
 
 type JwtHandler interface {
-	FetchJWK(url string) (jwk.Set, error)
-	VerifyWithKeyURL(token string, keyUrl string) (*jwt.RegisteredClaims, error)
-	VerifyWithKeySet(t string, keySet jwk.Set) (*jwt.RegisteredClaims, error)
+	Decode(token string) (*jwt.RegisteredClaims, error)
 }
 
 type AuthService interface {

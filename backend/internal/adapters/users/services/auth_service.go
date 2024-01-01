@@ -9,19 +9,17 @@ import (
 )
 
 type CognitoAuthService struct {
-	cognitoJwkUrl string
-	jwtHandler    corpts.JwtHandler
+	jwtHandler corpts.JwtHandler
 }
 
 func NewCognitoAuthService(
-	cognitoJwkUrl string,
 	jwtHandler corpts.JwtHandler,
 ) corpts.AuthService {
-	return &CognitoAuthService{cognitoJwkUrl, jwtHandler}
+	return &CognitoAuthService{jwtHandler}
 }
 
 func (u *CognitoAuthService) Verify(token string) (*jwt.RegisteredClaims, error) {
-	c, err := u.jwtHandler.VerifyWithKeyURL(token, u.cognitoJwkUrl)
+	c, err := u.jwtHandler.Decode(token)
 	if err != nil {
 		return nil, err
 	}

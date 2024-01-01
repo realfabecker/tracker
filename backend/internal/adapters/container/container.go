@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/realfabecker/wallet/internal/adapters/common/cache"
 	"github.com/realfabecker/wallet/internal/adapters/common/dotenv"
-	"github.com/realfabecker/wallet/internal/adapters/common/jwt"
+	"github.com/realfabecker/wallet/internal/adapters/common/jwt2"
 
 	payrep "github.com/realfabecker/wallet/internal/adapters/transactions/repositories"
 	usrsrv "github.com/realfabecker/wallet/internal/adapters/users/services"
@@ -58,8 +58,8 @@ func reg3() error {
 		return err
 	}
 
-	if err := Container.Provide(func(cache corpts.CacheHandler) corpts.JwtHandler {
-		return jwt.NewJwtHandler(cache)
+	if err := Container.Provide(func() corpts.JwtHandler {
+		return jwt2.NewJwtHandler()
 	}); err != nil {
 		return err
 	}
@@ -87,14 +87,9 @@ func reg3() error {
 	}
 
 	if err := Container.Provide(func(
-		walletConfig *cordom.Config,
-		cognitoClient *cognito.Client,
 		jwtHandler corpts.JwtHandler,
 	) corpts.AuthService {
-		return usrsrv.NewCognitoAuthService(
-			walletConfig.CognitoJwkUrl,
-			jwtHandler,
-		)
+		return usrsrv.NewCognitoAuthService(jwtHandler)
 	}); err != nil {
 		return err
 	}
