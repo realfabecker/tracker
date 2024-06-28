@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=jcroql
+version: 2
+
+project_name: tracker
+dist: dist
+
+before:
+  hooks:    
+    - go mod tidy
+
+builds:
+  - id: lambda
+    main: ./cmd/lambda/main.go
+    binary: lambda    
+    goos:
+      - linux
+    goarch:
+      - arm64
+    no_unique_dist_dir: true
+
+  - id: api
+    main: ./cmd/http/main.go
+    binary: api    
+    goos:
+      - linux
+    goarch:
+      - amd64
+    no_unique_dist_dir: true
+
+archives:
+  - id: lambda
+    format: binary
+    builds:
+      - lambda
+    wrap_in_directory: false
+    name_template: 'lambda'
+    
+  - id: api
+    format: binary
+    builds:
+      - api
+    wrap_in_directory: false
+    name_template: 'api'

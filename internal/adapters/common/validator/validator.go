@@ -2,6 +2,7 @@ package validator
 
 import (
 	"fmt"
+	"github.com/gofiber/fiber/v2/log"
 	"math/rand"
 	"regexp"
 	"time"
@@ -13,7 +14,10 @@ import (
 // NewValidator
 func NewValidator() *validator.Validate {
 	v := validator.New()
-	v.RegisterValidation("ISO8601", iso8601)
+	if err := v.RegisterValidation("ISO8601", iso8601); err != nil {
+		log.Error(err)
+		return nil
+	}
 	return v
 }
 
